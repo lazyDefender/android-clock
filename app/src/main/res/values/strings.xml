@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Clock</string>
+    <string name="title_alarm">Сигнал</string>
+    <string name="title_time">Світовий час</string>
+    <string name="title_stopwatch">Секундомір</string>
+    <string name="title_timer">Таймер</string>
+</resources>
