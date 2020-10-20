@@ -23,13 +23,6 @@ public class AlarmFragment extends Fragment {
         alarmViewModel =
                 new ViewModelProvider(this).get(AlarmViewModel.class);
         View root = inflater.inflate(R.layout.fragment_alarm, container, false);
-        final TextView textView = root.findViewById(R.id.text_alarm);
-        alarmViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
         return root;
     }
 }
