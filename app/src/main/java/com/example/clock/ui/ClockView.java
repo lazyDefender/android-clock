@@ -1,5 +1,6 @@
 package com.example.clock.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -11,6 +12,9 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
+import com.example.clock.R;
+
+import java.time.LocalTime;
 import java.util.Calendar;
 
 public class ClockView extends View {
@@ -44,6 +48,7 @@ public class ClockView extends View {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
+
     private void initClock() {
         height = getHeight();
         width = getWidth();
@@ -55,7 +60,7 @@ public class ClockView extends View {
         );
 
         int min = Math.min(height, width);
-        radius = min / 2 - padding;
+        radius = min / 2 - 150;
         handTruncation = min / 20;
         hourHandTruncation = min / 7;
         paint = new Paint();
@@ -68,29 +73,35 @@ public class ClockView extends View {
         if(!isInit) {
             initClock();
         }
-        canvas.drawColor(Color.BLACK);
-        drawCircle(canvas);
+//        canvas.drawColor(Color.WHITE);
+
         drawCenter(canvas);
         drawNumeral(canvas);
         drawHands(canvas);
+        drawCircle(canvas);
+
+        postInvalidateDelayed(500);
+        invalidate();
     }
 
     private void drawHand(Canvas canvas, double loc, boolean isHour) {
         double angle = Math.PI * loc / 30 - Math.PI / 2;
-        int handRadius = isHour ? radius - handTruncation - hourHandTruncation : radius - handTruncation;
+        int handLength = isHour ? radius - handTruncation - hourHandTruncation : radius - handTruncation;
         canvas.drawLine(width / 2, height / 2,
-                (float) (width / 2 + Math.cos(angle) * handRadius),
-                (float) (height / 2 + Math.sin(angle) * handRadius),
+                (float) (width / 2 + Math.cos(angle) * handLength),
+                (float) (height / 2 + Math.sin(angle) * handLength),
                 paint);
     }
 
     private void drawHands(Canvas canvas) {
-        Calendar c = Calendar.getInstance();
-        float hour = c.get(Calendar.HOUR_OF_DAY);
+        LocalTime time = LocalTime.now();
+        int hour = time.getHour();
+        int minute = time.getMinute();
+        int second = time.getSecond();
         hour = hour > 12 ? hour - 12 : hour;
-        drawHand(canvas, (hour + c.get(Calendar.MINUTE) / 60) * 5f, true);
-        drawHand(canvas, c.get(Calendar.MINUTE), false);
-        drawHand(canvas, c.get(Calendar.SECOND), false);
+        drawHand(canvas, (hour + minute / 60) * 5f, true);
+        drawHand(canvas, minute, false);
+        drawHand(canvas, second, false);
     }
 
     private void drawNumeral(Canvas canvas) {
@@ -109,9 +120,10 @@ public class ClockView extends View {
         canvas.drawCircle(width /2, height / 2, 12, paint);
     }
 
+    @SuppressLint("ResourceAsColor")
     private void drawCircle(Canvas canvas) {
         paint.reset();
-        paint.setColor(Color.WHITE);
+        paint.setColor(R.color.colorAccent);
         paint.setStrokeWidth(5);
         paint.setStyle(Paint.Style.STROKE);
         paint.setAntiAlias(true);
