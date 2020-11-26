@@ -36,7 +36,7 @@ public class AlarmsListAdapter extends RecyclerView.Adapter<AlarmsListAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.binding.textView.setText(alarms.get(position).getTitle());
+//        holder.binding.textView.setText(alarms.get(position).getTitle());
     }
 
     @Override
