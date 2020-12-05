@@ -14,42 +14,49 @@ import com.example.clock.models.Alarm;
 
 import java.util.List;
 
-public class AlarmsListAdapter extends RecyclerView.Adapter<AlarmsListAdapter.ViewHolder> {
-    private List<Alarm> alarms;
+public class AlarmsListAdapter extends RecyclerView.Adapter<AlarmsListAdapter.AlarmViewHolder> {
+    private List<Alarm> alarmsList;
 
-    public AlarmsListAdapter(List<Alarm> _alarms) {
-        alarms = _alarms;
+    public AlarmsListAdapter(List<Alarm> alarmsList) {
+        this.alarmsList = alarmsList;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AlarmViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        AlarmsListItemBinding binding = DataBindingUtil.inflate(
+        AlarmsListItemBinding binding = AlarmsListItemBinding.inflate(
                 inflater,
-                R.layout.alarms_list_item,
                 parent,
                 false
         );
-        return new ViewHolder(binding);
+        return new AlarmViewHolder(binding);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-//        holder.binding.textView.setText(alarms.get(position).getTitle());
+    public void onBindViewHolder(@NonNull AlarmViewHolder holder, int position) {
+        Alarm alarm = alarmsList.get(position);
+        holder.bind(alarm);
     }
 
     @Override
     public int getItemCount() {
-        return alarms.size();
+        return alarmsList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    class AlarmViewHolder extends RecyclerView.ViewHolder {
         private AlarmsListItemBinding binding;
 
-        public ViewHolder(@NonNull AlarmsListItemBinding binding) {
+        public AlarmViewHolder(AlarmsListItemBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }
+
+        public void bind(Alarm alarm) {
+            binding.setAlarm(alarm);
+            binding.executePendingBindings();
+        }
+
     }
+
 }
