@@ -18,7 +18,7 @@
             app:title="@string/add_alarm"
             app:titleTextColor="#FFFFFF"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            />
+        />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -26,30 +26,175 @@
             <TimePicker
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:timePickerMode="spinner"/>
+                android:timePickerMode="spinner"
+            />
 
            <LinearLayout
                android:layout_width="match_parent"
-               android:layout_height="match_parent"
-               android:orientation="horizontal">
-               <LinearLayout
-                   android:layout_width="match_parent"
-                   android:layout_height="match_parent"
-                   android:orientation="horizontal">
-                   <TextView
-                       android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:orientation="vertical">
+                   <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                       xmlns:app="http://schemas.android.com/apk/res-auto"
+                       xmlns:tools="http://schemas.android.com/tools"
+                       android:layout_width="match_parent"
                        android:layout_height="wrap_content"
-                       android:text="Повторювати"
-                       android:textColor="#000000"
-                       />
-                   <TextView
-                       android:layout_width="wrap_content"
-                       android:layout_height="wrap_content"
-                       android:text="Сигнал дзвінка лише раз"
-                       android:textColor="#000000"/>
-               </LinearLayout>
-           </LinearLayout>
+                       android:foreground="?android:attr/selectableItemBackground"
+                       android:minHeight="72dp"
+                       android:paddingTop="8dp"
+                       android:paddingBottom="8dp">
 
+                       <TextView
+                           android:id="@+id/title1"
+                           android:layout_width="0dp"
+                           android:layout_height="wrap_content"
+                           android:layout_marginLeft="8dp"
+                           android:layout_marginRight="8dp"
+                           android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
+                           app:layout_constraintTop_toTopOf="parent"
+                           app:layout_constraintBottom_toBottomOf="parent"
+                           app:layout_constraintLeft_toLeftOf="parent"
+                           android:text="Повторювати"
+                           tools:text="Повторювати"/>
+
+
+                       <LinearLayout
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:layout_margin="16dp"
+                           app:layout_constraintBottom_toBottomOf="parent"
+                           app:layout_constraintHorizontal_bias="1"
+                           app:layout_constraintLeft_toLeftOf="parent"
+                           app:layout_constraintRight_toRightOf="parent"
+                           app:layout_constraintTop_toTopOf="parent">
+                           <TextView
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="Сигнал дзвінка лише раз"/>
+                       </LinearLayout>
+
+                   </androidx.constraintlayout.widget.ConstraintLayout>
+                   <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                       xmlns:app="http://schemas.android.com/apk/res-auto"
+                       xmlns:tools="http://schemas.android.com/tools"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:foreground="?android:attr/selectableItemBackground"
+                       android:minHeight="72dp"
+                       android:paddingTop="8dp"
+                       android:paddingBottom="8dp">
+
+                       <TextView
+                           android:id="@+id/title2"
+                           android:layout_width="0dp"
+                           android:layout_height="wrap_content"
+                           android:layout_marginLeft="8dp"
+                           android:layout_marginRight="8dp"
+                           android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
+                           app:layout_constraintTop_toTopOf="parent"
+                           app:layout_constraintBottom_toBottomOf="parent"
+                           app:layout_constraintLeft_toLeftOf="parent"
+                           android:text="Сигнал"
+                           tools:text="Сигнал"/>
+
+
+                       <LinearLayout
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:layout_margin="16dp"
+                           app:layout_constraintBottom_toBottomOf="parent"
+                           app:layout_constraintHorizontal_bias="1"
+                           app:layout_constraintLeft_toLeftOf="parent"
+                           app:layout_constraintRight_toRightOf="parent"
+                           app:layout_constraintTop_toTopOf="parent">
+                           <TextView
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="Aegean Sea"
+                               tools:text="Aegean Sea"/>
+                       </LinearLayout>
+
+                   </androidx.constraintlayout.widget.ConstraintLayout>
+                   <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                       xmlns:app="http://schemas.android.com/apk/res-auto"
+                       xmlns:tools="http://schemas.android.com/tools"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:foreground="?android:attr/selectableItemBackground"
+                       android:minHeight="72dp"
+                       android:paddingTop="8dp"
+                       android:paddingBottom="8dp">
+
+                       <TextView
+                           android:id="@+id/title3"
+                           android:layout_width="0dp"
+                           android:layout_height="wrap_content"
+                           android:layout_marginLeft="8dp"
+                           android:layout_marginRight="8dp"
+                           android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
+                           app:layout_constraintTop_toTopOf="parent"
+                           app:layout_constraintBottom_toBottomOf="parent"
+                           app:layout_constraintLeft_toLeftOf="parent"
+                           android:text="Вібросигнал"
+                           tools:text="Вібросигнал"/>
+
+
+                       <LinearLayout
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:layout_margin="16dp"
+                           app:layout_constraintBottom_toBottomOf="parent"
+                           app:layout_constraintHorizontal_bias="1"
+                           app:layout_constraintLeft_toLeftOf="parent"
+                           app:layout_constraintRight_toRightOf="parent"
+                           app:layout_constraintTop_toTopOf="parent">
+                           <Switch
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"/>
+                       </LinearLayout>
+
+                   </androidx.constraintlayout.widget.ConstraintLayout>
+               <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                   xmlns:tools="http://schemas.android.com/tools"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:foreground="?android:attr/selectableItemBackground"
+                   android:minHeight="72dp"
+                   android:paddingTop="8dp"
+                   android:paddingBottom="8dp">
+
+                   <TextView
+                       android:id="@+id/title4"
+                       android:layout_width="0dp"
+                       android:layout_height="wrap_content"
+                       android:layout_marginLeft="8dp"
+                       android:layout_marginRight="8dp"
+                       android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
+                       app:layout_constraintTop_toTopOf="parent"
+                       app:layout_constraintBottom_toBottomOf="parent"
+                       app:layout_constraintLeft_toLeftOf="parent"
+                       android:text="Мітка"
+                       tools:text="Мітка"/>
+
+
+                   <LinearLayout
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:layout_margin="16dp"
+                       app:layout_constraintBottom_toBottomOf="parent"
+                       app:layout_constraintHorizontal_bias="1"
+                       app:layout_constraintLeft_toLeftOf="parent"
+                       app:layout_constraintRight_toRightOf="parent"
+                       app:layout_constraintTop_toTopOf="parent">
+                       <TextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text="Сигнал"
+                           tools:text="Сигнал"/>
+                   </LinearLayout>
+
+               </androidx.constraintlayout.widget.ConstraintLayout>
+               </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </layout>
