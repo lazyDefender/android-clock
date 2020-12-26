@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
     <data>
-<!--        <variable-->
-<!--            name="alarmFormHandler"-->
-<!--            type="com.example.clock.handlers.AlarmFormHandler" />-->
+        <variable
+            name="alarmFormHandler"
+            type="com.example.clock.handlers.AlarmFormHandler" />
+        <variable
+            name="alarm"
+            type="com.example.clock.models.Alarm" />
     </data>
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -50,6 +53,7 @@
                        android:paddingTop="8dp"
                        android:paddingBottom="8dp"
                        android:clickable="true"
+                       android:onClick="@{alarmFormHandler::showRepeatDialog}"
                        >
 
                        <TextView
@@ -79,7 +83,7 @@
                                android:id="@+id/repetitionDays"
                                android:layout_width="wrap_content"
                                android:layout_height="wrap_content"
-                               android:text="Сигнал дзвінка лише раз"/>
+                               android:text="@{String.valueOf(alarm.repetitionDays.length)}"/>
                        </LinearLayout>
 
                    </androidx.constraintlayout.widget.ConstraintLayout>
@@ -199,7 +203,7 @@
                        <TextView
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
-                           android:text="Сигнал"
+                           android:text="@{alarm.title}"
                            tools:text="Сигнал"/>
                    </LinearLayout>
 

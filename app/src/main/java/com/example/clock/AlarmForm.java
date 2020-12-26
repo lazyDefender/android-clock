@@ -12,11 +12,12 @@ import android.widget.Toast;
 
 import com.example.clock.databinding.ActivityAlarmFormBinding;
 import com.example.clock.handlers.AlarmFormHandler;
+import com.example.clock.models.Alarm;
 
 public class AlarmForm extends AppCompatActivity{
 
     ActivityAlarmFormBinding activityAlarmFormBinding;
-//    AlarmFormHandler alarmFormHandler;
+    AlarmFormHandler alarmFormHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,12 +25,12 @@ public class AlarmForm extends AppCompatActivity{
 
         activityAlarmFormBinding = DataBindingUtil.setContentView(this, R.layout.activity_alarm_form);
 
-
         setSupportActionBar(activityAlarmFormBinding.toolbar);
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
-//        alarmFormHandler = new AlarmFormHandler();
-//        activityAlarmFormBinding.setAlarmFormHandler(alarmFormHandler);
+        alarmFormHandler = new AlarmFormHandler();
+        activityAlarmFormBinding.setAlarmFormHandler(alarmFormHandler);
+        activityAlarmFormBinding.setAlarm(new Alarm());
     }
 
     @Override
