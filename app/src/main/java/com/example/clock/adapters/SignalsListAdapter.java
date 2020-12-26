@@ -1,23 +1,20 @@
-package com.example.clock.ui.alarm;
+package com.example.clock.adapters;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.clock.R;
 import com.example.clock.databinding.AlarmsListItemBinding;
 import com.example.clock.models.Alarm;
 
 import java.util.List;
 
-public class AlarmsListAdapter extends RecyclerView.Adapter<AlarmsListAdapter.AlarmViewHolder> {
+public class SignalsListAdapter extends RecyclerView.Adapter<SignalsListAdapter.AlarmViewHolder> {
     private List<Alarm> alarmsList;
 
-    public AlarmsListAdapter(List<Alarm> alarmsList) {
+    public SignalsListAdapter(List<Alarm> alarmsList) {
         this.alarmsList = alarmsList;
     }
 

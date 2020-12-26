@@ -2,7 +2,7 @@
 <layout>
     <data>
         <variable
-            name="alarm"
+            name="signal"
             type="com.example.clock.models.Alarm"/>
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -22,21 +22,13 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
-            app:layout_constraintBottom_toTopOf="@+id/textViewMedicine"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="1"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:text="@{alarm.title}"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="@{signal.title}"
             tools:text="Title"/>
-
-        <TextView
-        android:id="@+id/textViewMedicine"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/textViewName"
-        app:layout_constraintTop_toBottomOf="@+id/textViewName"
-        android:text="Писати код, щодня" />
 
         <Switch
             android:id="@+id/checkBoxAdministered"

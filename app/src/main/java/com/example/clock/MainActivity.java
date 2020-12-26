@@ -1,13 +1,10 @@
 package com.example.clock;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.example.clock.databinding.ActivityMainBinding;
 import com.example.clock.databinding.AlarmsListItemBinding;
 import com.example.clock.databinding.FragmentAlarmBinding;
-import com.example.clock.ui.alarm.AlarmsListAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,20 +13,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.example.clock.models.Alarm;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding activityMainBinding;

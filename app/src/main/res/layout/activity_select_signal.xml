@@ -78,6 +78,32 @@
                     </LinearLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
+                <androidx.core.widget.NestedScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+                    xmlns:tools="http://schemas.android.com/tools"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:scrollbars="none">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        tools:context=".ui.alarm.AlarmFragment"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        >
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/recycler_view"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+                        </RelativeLayout>
+                    </LinearLayout>
+
+                </androidx.core.widget.NestedScrollView>
 
             </LinearLayout>
         </LinearLayout>

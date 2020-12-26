@@ -66,23 +66,6 @@ public class AlarmFormHandler {
         builder.show();
     }
 
-    public Map<String, String> getAlarmRingtones(Context context) {
-        RingtoneManager manager = new RingtoneManager(context);
-        manager.setType(RingtoneManager.TYPE_ALARM);
-        Cursor cursor = manager.getCursor();
-
-        Map<String, String> list = new HashMap<>();
-        while (cursor.moveToNext()) {
-            String id = cursor.getString(RingtoneManager.ID_COLUMN_INDEX);
-            String notificationTitle = cursor.getString(RingtoneManager.TITLE_COLUMN_INDEX);
-            String notificationUri = cursor.getString(RingtoneManager.URI_COLUMN_INDEX);
-
-            list.put(notificationTitle, notificationUri + '/' + id);
-        }
-
-        return list;
-    }
-
     public void showSignalSelect(final View view) {
         Context context = view.getContext();
         Intent intent = new Intent(context, SelectSignalActivity.class);
