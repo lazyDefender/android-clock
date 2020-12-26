@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
+    <data>
+<!--        <variable-->
+<!--            name="alarmFormHandler"-->
+<!--            type="com.example.clock.handlers.AlarmFormHandler" />-->
+    </data>
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -24,6 +29,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
             <TimePicker
+                android:id="@+id/timepicker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:timePickerMode="spinner"
@@ -33,7 +39,8 @@
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:orientation="vertical">
-                   <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                   <androidx.constraintlayout.widget.ConstraintLayout
+                       xmlns:android="http://schemas.android.com/apk/res/android"
                        xmlns:app="http://schemas.android.com/apk/res-auto"
                        xmlns:tools="http://schemas.android.com/tools"
                        android:layout_width="match_parent"
@@ -41,7 +48,9 @@
                        android:foreground="?android:attr/selectableItemBackground"
                        android:minHeight="72dp"
                        android:paddingTop="8dp"
-                       android:paddingBottom="8dp">
+                       android:paddingBottom="8dp"
+                       android:clickable="true"
+                       >
 
                        <TextView
                            android:id="@+id/title1"
@@ -67,6 +76,7 @@
                            app:layout_constraintRight_toRightOf="parent"
                            app:layout_constraintTop_toTopOf="parent">
                            <TextView
+                               android:id="@+id/repetitionDays"
                                android:layout_width="wrap_content"
                                android:layout_height="wrap_content"
                                android:text="Сигнал дзвінка лише раз"/>
