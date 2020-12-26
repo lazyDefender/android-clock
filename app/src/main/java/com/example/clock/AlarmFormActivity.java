@@ -14,7 +14,7 @@ import com.example.clock.databinding.ActivityAlarmFormBinding;
 import com.example.clock.handlers.AlarmFormHandler;
 import com.example.clock.models.Alarm;
 
-public class AlarmForm extends AppCompatActivity{
+public class AlarmFormActivity extends AppCompatActivity{
 
     ActivityAlarmFormBinding activityAlarmFormBinding;
     AlarmFormHandler alarmFormHandler;
@@ -39,7 +39,7 @@ public class AlarmForm extends AppCompatActivity{
         switch(id) {
             case android.R.id.home:
                 Toast.makeText(this, "sure?", Toast.LENGTH_LONG).show();
-                break;
+                return false;
             default:
                 break;
         }

@@ -37,6 +37,7 @@ public class AlarmRepo {
             fis = context.openFileInput(filename);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            return new ArrayList<>();
         }
         InputStreamReader inputStreamReader =
                 new InputStreamReader(fis, StandardCharsets.UTF_8);
@@ -51,9 +52,10 @@ public class AlarmRepo {
             }
         } catch (IOException e) {
             // Error occurred when opening raw file for reading.
+            return new ArrayList<>();
         } finally {
             String contents = stringBuilder.toString();
         }
-        return new ArrayList<Alarm>();
+        return new ArrayList<>();
     }
 }
