@@ -4,20 +4,16 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.media.RingtoneManager;
 import android.view.View;
 
 import androidx.databinding.DataBindingUtil;
 
-import com.example.clock.SelectSignalActivity;
+import com.example.clock.SelectTuneActivity;
 import com.example.clock.databinding.ActivityAlarmFormBinding;
 import com.example.clock.models.Alarm;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class AlarmFormHandler {
     ActivityAlarmFormBinding binding;
@@ -68,7 +64,7 @@ public class AlarmFormHandler {
 
     public void showSignalSelect(final View view) {
         Context context = view.getContext();
-        Intent intent = new Intent(context, SelectSignalActivity.class);
+        Intent intent = new Intent(context, SelectTuneActivity.class);
         context.startActivity(intent);
     }
 }

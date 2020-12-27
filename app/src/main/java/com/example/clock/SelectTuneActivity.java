@@ -7,32 +7,24 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.Manifest;
-import android.content.ContentResolver;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.media.Ringtone;
 import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.widget.Toast;
 
 import com.example.clock.adapters.AlarmsListAdapter;
-import com.example.clock.adapters.SignalsListAdapter;
+import com.example.clock.adapters.TunesListAdapter;
 import com.example.clock.databinding.ActivitySelectSignalBinding;
+import com.example.clock.handlers.TuneHandler;
 import com.example.clock.models.Alarm;
+import com.example.clock.models.Tune;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class SelectSignalActivity extends AppCompatActivity {
+public class SelectTuneActivity extends AppCompatActivity {
     ActivitySelectSignalBinding activitySelectSignalBinding;
-    private SignalsListAdapter adapter;
+    private TunesListAdapter adapter;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -54,7 +46,7 @@ public class SelectSignalActivity extends AppCompatActivity {
 //                    String songId = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
 //                    Uri songUri = Uri.withAppendedPath(uriExternal, songId);
 //                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-//                    Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), songUri);
+//                    Tune r = RingtoneManager.getRingtone(getApplicationContext(), songUri);
 //                    r.play();
 //                    new String();
 //
@@ -75,32 +67,43 @@ public class SelectSignalActivity extends AppCompatActivity {
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
 
-        List<Alarm> signals = new ArrayList<>();
-        adapter = new SignalsListAdapter(signals);
+
+
         activitySelectSignalBinding.recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         activitySelectSignalBinding.recyclerView.setAdapter(adapter);
         activitySelectSignalBinding.recyclerView.setNestedScrollingEnabled(false);
 
-        List<Alarm> signalsList = new ArrayList<>();
-//                getAlarmRingtones(this);
-        AlarmsListAdapter adapter = new AlarmsListAdapter(signalsList);
+
+        List<Tune> tunesList = getAlarmTunes(this);
+        activitySelectSignalBinding.setTunes(tunesList);
+        TuneHandler tuneHandler = new TuneHandler(activitySelectSignalBinding, 0) {
+            @Override
+            public void afterHandle() {
+                adapter.notifyDataSetChanged();
+            }
+        };
+        adapter = new TunesListAdapter(activitySelectSignalBinding.getTunes(), tuneHandler);
         activitySelectSignalBinding.recyclerView.setAdapter(adapter);
+
     }
 
-    public Map<String, String> getAlarmRingtones(Context context) {
+    public List<Tune> getAlarmTunes(Context context) {
         RingtoneManager manager = new RingtoneManager(context);
         manager.setType(RingtoneManager.TYPE_ALARM);
         Cursor cursor = manager.getCursor();
+        List<Tune> tunes = new ArrayList<>();
 
-        Map<String, String> list = new HashMap<>();
         while (cursor.moveToNext()) {
             String id = cursor.getString(RingtoneManager.ID_COLUMN_INDEX);
-            String notificationTitle = cursor.getString(RingtoneManager.TITLE_COLUMN_INDEX);
-            String notificationUri = cursor.getString(RingtoneManager.URI_COLUMN_INDEX);
-
-            list.put(notificationTitle, notificationUri + '/' + id);
+            String ringtoneTitle = cursor.getString(RingtoneManager.TITLE_COLUMN_INDEX);
+            String directoryUri = cursor.getString(RingtoneManager.URI_COLUMN_INDEX);
+            Tune tune = new Tune(id, ringtoneTitle, directoryUri);
+            tunes.add(tune);
         }
 
-        return list;
+        Tune firstTune = tunes.get(0);
+        firstTune.setSelected(true);
+        tunes.set(0, firstTune);
+        return tunes;
     }
 }
