@@ -1,5 +1,8 @@
 package com.example.clock.handlers;
 
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -40,6 +43,12 @@ public abstract class TuneHandler {
         activitySelectSignalBinding.setTunes(tunesList);
 
         afterHandle();
+
+        Tune selectedTune = tunesList.get(index);
+        Uri uri = Uri.parse(selectedTune.getDirectoryUri() + '/' + selectedTune.getId());
+        Ringtone ringtone = RingtoneManager.getRingtone(view.getContext(), uri);
+        ringtone.play();
+
     }
 
 }

@@ -12,11 +12,9 @@ import android.database.Cursor;
 import android.media.RingtoneManager;
 import android.os.Bundle;
 
-import com.example.clock.adapters.AlarmsListAdapter;
 import com.example.clock.adapters.TunesListAdapter;
 import com.example.clock.databinding.ActivitySelectSignalBinding;
 import com.example.clock.handlers.TuneHandler;
-import com.example.clock.models.Alarm;
 import com.example.clock.models.Tune;
 
 import java.util.ArrayList;
