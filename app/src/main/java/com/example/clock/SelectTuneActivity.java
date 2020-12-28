@@ -13,6 +13,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.media.RingtoneManager;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.clock.adapters.TunesListAdapter;
 import com.example.clock.databinding.ActivitySelectSignalBinding;
@@ -87,8 +91,7 @@ public class SelectTuneActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onBackPressed() {
+    public void onBack() {
         List<Tune> tunes = activitySelectSignalBinding.getTunes();
         Tune selectedTune = tunes
                 .stream()
@@ -99,6 +102,11 @@ public class SelectTuneActivity extends AppCompatActivity {
         intent.putExtra("tune", selectedTune);
         setResult(Activity.RESULT_OK, intent);
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        onBack();
     }
 
     public List<Tune> getAlarmTunes(Context context) {
@@ -119,5 +127,23 @@ public class SelectTuneActivity extends AppCompatActivity {
         firstTune.setSelected(true);
         tunes.set(0, firstTune);
         return tunes;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch(id) {
+            case android.R.id.home:
+                onBack();
+                return true;
+            default:
+                break;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
     }
 }
