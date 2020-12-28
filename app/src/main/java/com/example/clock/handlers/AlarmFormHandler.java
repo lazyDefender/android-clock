@@ -44,6 +44,7 @@ public class AlarmFormHandler {
         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
         builder
                 .setTitle("Повторювати")
+                .setNegativeButton("СКАСУВАТИ", ((dialogInterface, i) -> dialogInterface.dismiss()))
                 .setPositiveButton("ОК", (dialogInterface, i) -> {
                     int[] repetitionDays = getRepetitionDaysFromCheckedItems(checkedItems);
                     Alarm alarm = binding.getAlarm();
@@ -60,6 +61,13 @@ public class AlarmFormHandler {
         Activity currentActivity = (Activity) context;
         Intent intent = new Intent(context, SelectTuneActivity.class);
         currentActivity.startActivityForResult(intent, 1);
+    }
+
+    public void showTitleDialog(final View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+//        builder
+//                .setTitle("Мітка")
+
     }
 
 }
