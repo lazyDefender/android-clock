@@ -7,7 +7,9 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.media.RingtoneManager;
 import android.os.Bundle;
@@ -83,6 +85,20 @@ public class SelectTuneActivity extends AppCompatActivity {
         adapter = new TunesListAdapter(activitySelectSignalBinding.getTunes(), tuneHandler);
         activitySelectSignalBinding.recyclerView.setAdapter(adapter);
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        List<Tune> tunes = activitySelectSignalBinding.getTunes();
+        Tune selectedTune = tunes
+                .stream()
+                .filter(tune -> tune.isSelected())
+                .findFirst()
+                .orElse(null);
+        Intent intent = new Intent();
+        intent.putExtra("tune", selectedTune);
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 
     public List<Tune> getAlarmTunes(Context context) {

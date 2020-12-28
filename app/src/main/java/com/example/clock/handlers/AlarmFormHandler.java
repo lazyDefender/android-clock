@@ -1,5 +1,6 @@
 package com.example.clock.handlers;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -33,38 +34,32 @@ public class AlarmFormHandler {
         binding = DataBindingUtil.findBinding(view);
 
         String[] items = {"Понеділок", "Вівторок", "Середа", "Четвер", "П\'ятниця", "Субота", "Неділя"};
+        int[] selectedRepetitionDays = binding.getAlarm().getRepetitionDays();
+
         final boolean[] checkedItems = {false, false, false, false, false, false, false };
+        for(int d : selectedRepetitionDays) {
+            checkedItems[d] = true;
+        }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
         builder
                 .setTitle("Повторювати")
-                .setPositiveButton("ОК", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        int[] repetitionDays = getRepetitionDaysFromCheckedItems(checkedItems);
-                        String signal = binding.getAlarm().getSignal();
-                        String title = binding.getAlarm().getTitle();
-                        Boolean shouldVibrate = binding.getAlarm().getShouldVibrate();
-                        Alarm updatedAlarm = new Alarm();
-                        updatedAlarm.setRepetitionDays(repetitionDays);
-                        updatedAlarm.setSignal(signal);
-                        updatedAlarm.setTitle(title);
-                        updatedAlarm.setShouldVibrate(shouldVibrate);
-                        binding.setAlarm(updatedAlarm);
-                    }
+                .setPositiveButton("ОК", (dialogInterface, i) -> {
+                    int[] repetitionDays = getRepetitionDaysFromCheckedItems(checkedItems);
+                    Alarm alarm = binding.getAlarm();
+                    alarm.setRepetitionDays(repetitionDays);
+                    binding.setAlarm(alarm);
                 })
-                .setMultiChoiceItems(items, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int which, boolean checked) {
-                        checkedItems[which] = checked;
-                    }
-                })
+                .setMultiChoiceItems(items, checkedItems, (dialogInterface, which, checked) -> checkedItems[which] = checked)
         ;
         builder.show();
     }
 
     public void showSignalSelect(final View view) {
         Context context = view.getContext();
+        Activity currentActivity = (Activity) context;
         Intent intent = new Intent(context, SelectTuneActivity.class);
-        context.startActivity(intent);
+        currentActivity.startActivityForResult(intent, 1);
     }
+
 }

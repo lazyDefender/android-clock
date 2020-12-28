@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 public class Alarm {
     private String title;
     private int[] repetitionDays;
-    private String signal;
+    private Tune tune;
     private boolean shouldVibrate;
 
     @NonNull
@@ -14,14 +14,12 @@ public class Alarm {
         StringBuilder sb = new StringBuilder();
         sb.append("title: " + title + ", ");
         sb.append("repetitionDays: " + repetitionDays + ", ");
-        sb.append("signal: " + signal + ", ");
         sb.append("shouldVibrate: " + shouldVibrate);
         return sb.toString();
     }
 
     public Alarm() {
         setRepetitionDays(new int[] {});
-        setSignal("");
         setShouldVibrate(false);
         setTitle("Мітка");
     }
@@ -34,16 +32,16 @@ public class Alarm {
         this.repetitionDays = repetitionDays;
     }
 
-    public String getSignal() {
-        return signal;
-    }
-
-    public void setSignal(String signal) {
-        this.signal = signal;
-    }
-
     public boolean getShouldVibrate() {
         return shouldVibrate;
+    }
+
+    public Tune getTune() {
+        return tune;
+    }
+
+    public void setTune(Tune tune) {
+        this.tune = tune;
     }
 
     public void setShouldVibrate(boolean shouldVibrate) {

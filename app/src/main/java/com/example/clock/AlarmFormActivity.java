@@ -1,10 +1,15 @@
 package com.example.clock;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import android.content.Intent;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +18,7 @@ import android.widget.Toast;
 import com.example.clock.databinding.ActivityAlarmFormBinding;
 import com.example.clock.handlers.AlarmFormHandler;
 import com.example.clock.models.Alarm;
+import com.example.clock.models.Tune;
 
 public class AlarmFormActivity extends AppCompatActivity{
 
@@ -28,9 +34,31 @@ public class AlarmFormActivity extends AppCompatActivity{
         setSupportActionBar(activityAlarmFormBinding.toolbar);
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
+
         alarmFormHandler = new AlarmFormHandler();
         activityAlarmFormBinding.setAlarmFormHandler(alarmFormHandler);
-        activityAlarmFormBinding.setAlarm(new Alarm());
+
+
+        Uri alarmToneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        Ringtone ringtone = RingtoneManager.getRingtone(this, alarmToneUri);
+
+        String title = ringtone.getTitle(this);
+        Alarm defaultAlarm = new Alarm();
+        defaultAlarm.setTune(new Tune(title, alarmToneUri.toString()));
+        activityAlarmFormBinding.setAlarm(defaultAlarm);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1) {
+            if(resultCode == RESULT_OK) {
+                Tune selectedTune = data.getParcelableExtra("tune");
+                Alarm alarm = activityAlarmFormBinding.getAlarm();
+                alarm.setTune(selectedTune);
+                activityAlarmFormBinding.setAlarm(alarm);
+            }
+        }
     }
 
     @Override

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
     <data>
+        <import type="com.example.clock.utils.AlarmFormUtils"/>
         <variable
             name="alarmFormHandler"
             type="com.example.clock.handlers.AlarmFormHandler" />
@@ -86,7 +87,7 @@
                                android:id="@+id/repetitionDays"
                                android:layout_width="wrap_content"
                                android:layout_height="wrap_content"
-                               android:text="@{String.valueOf(alarm.repetitionDays.length)}"/>
+                               android:text="@{AlarmFormUtils.getRepetitionDays(alarm.repetitionDays)}"/>
                        </LinearLayout>
 
                    </androidx.constraintlayout.widget.ConstraintLayout>
@@ -127,7 +128,7 @@
                            <TextView
                                android:layout_width="wrap_content"
                                android:layout_height="wrap_content"
-                               android:text="Aegean Sea"
+                               android:text="@{alarm.tune.title}"
                                tools:text="Aegean Sea"/>
                        </LinearLayout>
 
