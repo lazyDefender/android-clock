@@ -69,6 +69,13 @@ public class AlarmFormHandler {
         currentActivity.startActivityForResult(intent, 1);
     }
 
+    public void handleShouldVibrateChange(final View view) {
+        binding = DataBindingUtil.findBinding(view);
+        Alarm alarm = binding.getAlarm();
+        alarm.setShouldVibrate(!alarm.getShouldVibrate());
+        binding.setAlarm(alarm);
+    }
+
     public void showTitleDialog(final View view) {
         binding = DataBindingUtil.findBinding(view);
         Context context = view.getContext();
