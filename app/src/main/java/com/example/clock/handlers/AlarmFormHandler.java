@@ -2,10 +2,16 @@ package com.example.clock.handlers;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 
@@ -64,10 +70,33 @@ public class AlarmFormHandler {
     }
 
     public void showTitleDialog(final View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-//        builder
-//                .setTitle("Мітка")
+        binding = DataBindingUtil.findBinding(view);
+        Context context = view.getContext();
+        Alarm alarm = binding.getAlarm();
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        final EditText titleInput = new EditText(context);
+        titleInput.setText(alarm.getTitle());
 
+        builder
+                .setView(titleInput)
+                .setTitle("Мітка")
+                .setNegativeButton("СКАСУВАТИ", ((dialogInterface, i) -> {
+                    dialogInterface.dismiss();
+                }))
+                .setPositiveButton("ОК", ((dialogInterface, i) -> {
+                    String title = titleInput.getText().toString();
+                    alarm.setTitle(title);
+                    binding.setAlarm(alarm);
+                }));
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
+
+        // показати клавіатуру
+        if(titleInput.requestFocus()) {
+            dialog.getWindow().setSoftInputMode (WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
     }
+
 
 }
