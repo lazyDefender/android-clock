@@ -6,6 +6,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -13,12 +14,19 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.clock.databinding.ActivityAlarmFormBinding;
 import com.example.clock.handlers.AlarmFormHandler;
 import com.example.clock.models.Alarm;
 import com.example.clock.models.Tune;
+import com.example.clock.utils.RequestCodes;
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import java.io.IOException;
+import java.time.LocalTime;
+import java.util.TimeZone;
 
 public class AlarmFormActivity extends AppCompatActivity{
 
@@ -46,19 +54,14 @@ public class AlarmFormActivity extends AppCompatActivity{
         Alarm defaultAlarm = new Alarm();
         defaultAlarm.setTune(new Tune(title, alarmToneUri.toString()));
         activityAlarmFormBinding.setAlarm(defaultAlarm);
-    }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 1) {
-            if(resultCode == RESULT_OK) {
-                Tune selectedTune = data.getParcelableExtra("tune");
-                Alarm alarm = activityAlarmFormBinding.getAlarm();
-                alarm.setTune(selectedTune);
-                activityAlarmFormBinding.setAlarm(alarm);
-            }
-        }
+        activityAlarmFormBinding.timepicker.setOnTimeChangedListener((timePicker, hour, min) -> {
+            Alarm alarm = activityAlarmFormBinding.getAlarm();
+            alarm.setHour(hour);
+            alarm.setMin(min);
+            activityAlarmFormBinding.setAlarm(alarm);
+        });
+
     }
 
     @Override
@@ -68,6 +71,17 @@ public class AlarmFormActivity extends AppCompatActivity{
             case android.R.id.home:
                 Toast.makeText(this, "sure?", Toast.LENGTH_LONG).show();
                 return false;
+            case R.id.save_alarm:
+                try {
+                    Alarm alarm = activityAlarmFormBinding.getAlarm();
+                    AlarmRepo.save(alarm, this);
+                    AlarmRepo.setNewAlarm(alarm);
+                    finish();
+                } catch (JsonProcessingException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             default:
                 break;
         }

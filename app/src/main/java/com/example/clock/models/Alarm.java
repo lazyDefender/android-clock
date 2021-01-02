@@ -1,27 +1,33 @@
 package com.example.clock.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
+
+import java.time.LocalTime;
+import java.util.Date;
 
 public class Alarm {
     private String title;
     private int[] repetitionDays;
     private Tune tune;
     private boolean shouldVibrate;
-
-    @NonNull
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("title: " + title + ", ");
-        sb.append("repetitionDays: " + repetitionDays + ", ");
-        sb.append("shouldVibrate: " + shouldVibrate);
-        return sb.toString();
-    }
+    private int hour;
+    private int min;
+    private boolean isActive = true;
 
     public Alarm() {
         setRepetitionDays(new int[] {});
         setShouldVibrate(false);
         setTitle("Мітка");
+        LocalTime time = LocalTime.now();
+        setHour(time.getHour());
+        setMin(time.getMinute());
+    }
+
+    public Alarm(String title) {
+        setTitle(title);
     }
 
     public int[] getRepetitionDays() {
@@ -48,16 +54,36 @@ public class Alarm {
         this.shouldVibrate = shouldVibrate;
     }
 
-    public Alarm(String title) {
-        this.title = title;
-    }
-
     public String getTitle() {
         return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public int getHour() {
+        return hour;
+    }
+
+    public void setHour(int hour) {
+        this.hour = hour;
+    }
+
+    public int getMin() {
+        return min;
+    }
+
+    public void setMin(int min) {
+        this.min = min;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
 }

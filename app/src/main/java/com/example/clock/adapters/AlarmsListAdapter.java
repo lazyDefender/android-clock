@@ -1,11 +1,15 @@
 package com.example.clock.adapters;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.clock.DeleteAlarmsActivity;
 import com.example.clock.databinding.AlarmsListItemBinding;
 import com.example.clock.models.Alarm;
 
@@ -52,6 +56,17 @@ public class AlarmsListAdapter extends RecyclerView.Adapter<AlarmsListAdapter.Al
         public void bind(Alarm alarm) {
             binding.setAlarm(alarm);
             binding.executePendingBindings();
+            binding.alarmListItemContainer.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    Context context = view.getContext();
+
+                    Intent intent = new Intent(context, DeleteAlarmsActivity.class);
+                    context.startActivity(intent);
+
+                    return true;
+                }
+            });
         }
 
     }

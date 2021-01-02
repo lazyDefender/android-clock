@@ -18,12 +18,14 @@ import androidx.databinding.DataBindingUtil;
 import com.example.clock.SelectTuneActivity;
 import com.example.clock.databinding.ActivityAlarmFormBinding;
 import com.example.clock.models.Alarm;
+import com.example.clock.utils.RequestCodes;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AlarmFormHandler {
     ActivityAlarmFormBinding binding;
+
     private int[] getRepetitionDaysFromCheckedItems(boolean[] checkedItems) {
         List<Integer> days = new ArrayList<>();
         for(int j=0;j<checkedItems.length;j++) {
@@ -66,7 +68,7 @@ public class AlarmFormHandler {
         Context context = view.getContext();
         Activity currentActivity = (Activity) context;
         Intent intent = new Intent(context, SelectTuneActivity.class);
-        currentActivity.startActivityForResult(intent, 1);
+        currentActivity.startActivityForResult(intent, RequestCodes.SHOW_TUNE_SELECT);
     }
 
     public void handleShouldVibrateChange(final View view) {

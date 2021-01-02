@@ -1,12 +1,18 @@
 package com.example.clock;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.example.clock.databinding.ActivityMainBinding;
 import com.example.clock.databinding.AlarmsListItemBinding;
 import com.example.clock.databinding.FragmentAlarmBinding;
+import com.example.clock.models.Alarm;
+import com.example.clock.models.Tune;
+import com.example.clock.utils.RequestCodes;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.navigation.NavController;
@@ -36,6 +42,6 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
-    }
 
+    }
 }

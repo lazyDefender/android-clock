@@ -29,6 +29,10 @@ public class Tune implements Parcelable {
         isSelected = selected;
     }
 
+    public Tune() {
+
+    }
+
     public Tune(String id, String title, String directoryUri) {
         this.id = id;
         this.title = title;
