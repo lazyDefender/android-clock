@@ -1,8 +1,10 @@
 package com.example.clock;
 
 import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.PowerManager;
 import android.widget.Toast;
 
 import com.example.clock.json.Json;
@@ -78,8 +80,32 @@ public class AlarmRepo {
 
     }
 
-    public static void launchAlarm(Alarm alarm, AlarmManager manager) {
+    public static void launchAlarm(Context context, Alarm alarm, AlarmManager manager, Class activityClass) {
+        int i = 0;
+        int[] days = alarm.getRepetitionDays();
+        do {
+            Calendar calendar = Calendar.getInstance();
 
+            calendar.set(Calendar.HOUR, alarm.getHour());
+            calendar.set(Calendar.MINUTE, alarm.getMin());
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.AM_PM, Calendar.AM);
+
+            Intent intent = new Intent(context, AlarmActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, (int) System.currentTimeMillis(), intent, 0);
+
+            if(days.length > 0) {
+                calendar.set(Calendar.DAY_OF_WEEK, days[i] + 1);
+                manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 7, pendingIntent);
+            }
+
+            else {
+                manager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            }
+
+            i++;
+        }
+        while(i < days.length);
     }
 
     public static List<Alarm> findAll(Context context) throws IOException, ClassNotFoundException {

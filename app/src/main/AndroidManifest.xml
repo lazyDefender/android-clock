@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.QUICKBOOT_POWERON" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:allowBackup="true"
@@ -18,7 +19,9 @@
         <activity
             android:name=".AlarmActivity"
             android:label="@string/title_activity_alarm"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:showOnLockScreen="true"
+            android:turnScreenOn="true"></activity>
         <activity
             android:name=".DeleteAlarmsActivity"
             android:label="@string/title_activity_delete_alarms"
