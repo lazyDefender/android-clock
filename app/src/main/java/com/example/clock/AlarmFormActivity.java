@@ -7,6 +7,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -26,6 +29,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.io.IOException;
 import java.time.LocalTime;
+import java.util.Calendar;
 import java.util.TimeZone;
 
 public class AlarmFormActivity extends AppCompatActivity{
@@ -76,6 +80,40 @@ public class AlarmFormActivity extends AppCompatActivity{
                     Alarm alarm = activityAlarmFormBinding.getAlarm();
                     AlarmRepo.save(alarm, this);
                     AlarmRepo.setNewAlarm(alarm);
+
+                    int i = 0;
+                    int[] days = alarm.getRepetitionDays();
+                    do {
+                        Calendar calendar = Calendar.getInstance();
+
+                        calendar.set(Calendar.HOUR, alarm.getHour());
+                        calendar.set(Calendar.MINUTE, alarm.getMin());
+                        calendar.set(Calendar.SECOND, 0);
+                        calendar.set(Calendar.AM_PM, Calendar.AM);
+
+                        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                        Intent intent = new Intent(this, AlarmActivity.class);
+                        PendingIntent pendingIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
+
+                        if(days.length > 0) {
+                            calendar.set(Calendar.DAY_OF_WEEK, days[i] + 1);
+                            manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 7, pendingIntent);
+                        }
+
+                        else {
+                            manager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                        }
+                        i++;
+                    }
+                    while(i < days.length);
+
+
+
+
+
+
+
+
                     finish();
                 } catch (JsonProcessingException | ClassNotFoundException e) {
                     e.printStackTrace();

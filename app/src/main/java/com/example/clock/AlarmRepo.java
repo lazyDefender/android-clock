@@ -1,6 +1,8 @@
 package com.example.clock;
 
+import android.app.AlarmManager;
 import android.content.Context;
+import android.content.Intent;
 import android.widget.Toast;
 
 import com.example.clock.json.Json;
@@ -20,6 +22,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class AlarmRepo {
@@ -72,6 +75,10 @@ public class AlarmRepo {
             String newJson = Json.toJsonArray(alarms);
             writeToFile(newJson, fileFullPath);
         }
+
+    }
+
+    public static void launchAlarm(Alarm alarm, AlarmManager manager) {
 
     }
 

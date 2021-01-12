@@ -16,9 +16,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".AlarmActivity"
+            android:label="@string/title_activity_alarm"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".DeleteAlarmsActivity"
             android:label="@string/title_activity_delete_alarms"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".SelectTuneActivity"
             android:parentActivityName=".AlarmFormActivity"
