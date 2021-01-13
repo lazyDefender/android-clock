@@ -92,6 +92,7 @@ public class AlarmRepo {
             calendar.set(Calendar.AM_PM, Calendar.AM);
 
             Intent intent = new Intent(context, AlarmActivity.class);
+            intent.putExtra("alarmId", alarm.getId());
             PendingIntent pendingIntent = PendingIntent.getActivity(context, (int) System.currentTimeMillis(), intent, 0);
 
             if(days.length > 0) {
@@ -123,5 +124,11 @@ public class AlarmRepo {
         }
 
         return alarms;
+    }
+
+    public static Alarm findById(Context context, long id) throws IOException, ClassNotFoundException {
+        List<Alarm> alarms = findAll(context);
+        Alarm foundAlarm = alarms.stream().filter(alarm -> alarm.getId() == id).findFirst().get();
+        return foundAlarm;
     }
 }

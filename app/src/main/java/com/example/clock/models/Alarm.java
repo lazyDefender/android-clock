@@ -9,7 +9,17 @@ import java.time.LocalTime;
 import java.util.Date;
 
 public class Alarm {
+    private long id;
     private String title;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     private int[] repetitionDays;
     private Tune tune;
     private boolean shouldVibrate;
@@ -18,6 +28,7 @@ public class Alarm {
     private boolean isActive = true;
 
     public Alarm() {
+        setId(System.currentTimeMillis());
         setRepetitionDays(new int[] {});
         setShouldVibrate(false);
         setTitle("Мітка");
