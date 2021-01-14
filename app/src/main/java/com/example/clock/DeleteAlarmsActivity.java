@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.example.clock.adapters.DeleteAlarmsListAdapter;
 import com.example.clock.databinding.ActivityDeleteAlarmsBinding;
+import com.example.clock.handlers.DeleteAlarmsHandler;
 import com.example.clock.models.Alarm;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -22,6 +23,7 @@ import java.util.List;
 
 public class DeleteAlarmsActivity extends AppCompatActivity {
     ActivityDeleteAlarmsBinding activityDeleteAlarmsBinding;
+    DeleteAlarmsListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,11 +36,10 @@ public class DeleteAlarmsActivity extends AppCompatActivity {
 
         try {
             List<Alarm> alarms = AlarmRepo.findAll(this);
-            DeleteAlarmsListAdapter adapter = new DeleteAlarmsListAdapter(alarms);
-            activityDeleteAlarmsBinding.deleteAlarmsList.setAdapter(adapter);
+            adapter = new DeleteAlarmsListAdapter(alarms);
+            activityDeleteAlarmsBinding.setAdapter(adapter);
             activityDeleteAlarmsBinding.deleteAlarmsList.setNestedScrollingEnabled(false);
             activityDeleteAlarmsBinding.deleteAlarmsList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

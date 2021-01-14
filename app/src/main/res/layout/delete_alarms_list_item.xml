@@ -5,6 +5,9 @@
         <variable
             name="alarm"
             type="com.example.clock.models.Alarm"/>
+        <variable
+            name="deleteAlarmsHandler"
+            type="com.example.clock.handlers.DeleteAlarmsHandler" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/alarm_list_item_container"
@@ -56,7 +59,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:src="@drawable/ic_delete"
-
+            android:onClick="@{(view) -> deleteAlarmsHandler.onDelete(view, alarm)}"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
