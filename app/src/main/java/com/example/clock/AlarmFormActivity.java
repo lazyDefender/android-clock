@@ -31,6 +31,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
 import java.time.LocalTime;
 import java.util.Calendar;
+import java.util.List;
 import java.util.TimeZone;
 
 public class AlarmFormActivity extends AppCompatActivity{
@@ -91,10 +92,12 @@ public class AlarmFormActivity extends AppCompatActivity{
             case R.id.save_alarm:
                 try {
                     Alarm alarm = activityAlarmFormBinding.getAlarm();
-                    AlarmRepo.save(alarm, this);
-                    AlarmRepo.setNewAlarm(alarm);
+
                     AlarmManager manager = (AlarmManager) getSystemService(Service.ALARM_SERVICE);
-                    AlarmRepo.launchAlarm(this, alarm, manager, AlarmActivity.class);
+                    List<Long> alarmManagerTaskIds = AlarmRepo.launchAlarm(this, alarm, manager, AlarmActivity.class);
+                    alarm.setAlarmManagerTaskIds(alarmManagerTaskIds);
+                    AlarmRepo.save(this, alarm);
+                    AlarmRepo.setNewAlarm(alarm);
                     finish();
                 } catch (JsonProcessingException | ClassNotFoundException e) {
                     e.printStackTrace();

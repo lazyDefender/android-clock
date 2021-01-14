@@ -6,26 +6,21 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Alarm {
     private long id;
     private String title;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
     private int[] repetitionDays;
     private Tune tune;
     private boolean shouldVibrate;
     private int hour;
     private int min;
     private boolean isActive = true;
+
+    private List<Long> alarmManagerTaskIds;
 
     public Alarm() {
         setId(System.currentTimeMillis());
@@ -35,10 +30,19 @@ public class Alarm {
         LocalTime time = LocalTime.now();
         setHour(time.getHour());
         setMin(time.getMinute());
+        setAlarmManagerTaskIds(new ArrayList<>());
     }
 
     public Alarm(String title) {
         setTitle(title);
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public int[] getRepetitionDays() {
@@ -96,5 +100,14 @@ public class Alarm {
     public void setActive(boolean active) {
         isActive = active;
     }
+
+    public List<Long> getAlarmManagerTaskIds() {
+        return alarmManagerTaskIds;
+    }
+
+    public void setAlarmManagerTaskIds(List<Long> alarmManagerTaskIds) {
+        this.alarmManagerTaskIds = alarmManagerTaskIds;
+    }
+
 
 }

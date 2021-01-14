@@ -60,7 +60,7 @@ public class AlarmRepo {
 }
 
 
-    public static void save(Alarm alarm, Context context) throws IOException, ClassNotFoundException {
+    public static void save(Context context, Alarm alarm) throws IOException, ClassNotFoundException {
         File alarmsFile = new File(context.getFilesDir(), filename);
         String fileFullPath = context.getFilesDir().getAbsolutePath().concat("/" + filename);
 
@@ -80,9 +80,18 @@ public class AlarmRepo {
 
     }
 
-    public static void launchAlarm(Context context, Alarm alarm, AlarmManager manager, Class activityClass) {
+    public static PendingIntent createAlarmPendingIntent(Context context, Alarm alarm, long id) {
+        Intent intent = new Intent(context, AlarmActivity.class);
+        intent.putExtra("alarmId", alarm.getId());
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, (int) id, intent, 0);
+        return pendingIntent;
+    }
+
+    public static List<Long> launchAlarm(Context context, Alarm alarm, AlarmManager manager, Class activityClass) {
         int i = 0;
         int[] days = alarm.getRepetitionDays();
+        List<Long> alarmManagerTaskIds = new ArrayList<Long>();
+
         do {
             Calendar calendar = Calendar.getInstance();
 
@@ -91,22 +100,25 @@ public class AlarmRepo {
             calendar.set(Calendar.SECOND, 0);
             calendar.set(Calendar.AM_PM, Calendar.AM);
 
-            Intent intent = new Intent(context, AlarmActivity.class);
-            intent.putExtra("alarmId", alarm.getId());
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, (int) System.currentTimeMillis(), intent, 0);
+            PendingIntent pendingIntent = createAlarmPendingIntent(context, alarm, System.currentTimeMillis());
+
+            long alarmManagerTaskId = calendar.getTimeInMillis();
 
             if(days.length > 0) {
                 calendar.set(Calendar.DAY_OF_WEEK, days[i] + 1);
-                manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 7, pendingIntent);
+                manager.setRepeating(AlarmManager.RTC_WAKEUP, alarmManagerTaskId, AlarmManager.INTERVAL_DAY * 7, pendingIntent);
             }
 
             else {
-                manager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                manager.set(AlarmManager.RTC_WAKEUP, alarmManagerTaskId, pendingIntent);
             }
+
+            alarmManagerTaskIds.add(alarmManagerTaskId);
 
             i++;
         }
         while(i < days.length);
+        return alarmManagerTaskIds;
     }
 
     public static List<Alarm> findAll(Context context) throws IOException, ClassNotFoundException {
@@ -130,5 +142,20 @@ public class AlarmRepo {
         List<Alarm> alarms = findAll(context);
         Alarm foundAlarm = alarms.stream().filter(alarm -> alarm.getId() == id).findFirst().get();
         return foundAlarm;
+    }
+
+    public static void delete(Context context, long id) throws IOException, ClassNotFoundException {
+        List<Alarm> alarms = findAll(context);
+        Alarm alarmToDelete = alarms
+                .stream()
+                .filter(alarm -> alarm.getId() == id)
+                .findFirst()
+                .get();
+        alarms.remove(alarmToDelete);
+
+        String newJson = Json.toJsonArray(alarms);
+        String fileFullPath = context.getFilesDir().getAbsolutePath().concat("/" + filename);
+        writeToFile(newJson, fileFullPath);
+
     }
 }

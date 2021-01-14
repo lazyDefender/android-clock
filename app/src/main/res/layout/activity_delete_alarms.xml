@@ -4,6 +4,9 @@
         <variable
             name="adapter"
             type="com.example.clock.adapters.DeleteAlarmsListAdapter" />
+        <variable
+            name="deleteAlarmsHandler"
+            type="com.example.clock.handlers.DeleteAlarmsHandler" />
     </data>
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"

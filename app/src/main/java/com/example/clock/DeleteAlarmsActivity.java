@@ -1,22 +1,29 @@
 package com.example.clock;
 
+import android.app.AlarmManager;
+import android.app.Service;
 import android.os.Bundle;
 
 import com.example.clock.adapters.DeleteAlarmsListAdapter;
 import com.example.clock.databinding.ActivityDeleteAlarmsBinding;
 import com.example.clock.handlers.DeleteAlarmsHandler;
 import com.example.clock.models.Alarm;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.List;
@@ -24,15 +31,49 @@ import java.util.List;
 public class DeleteAlarmsActivity extends AppCompatActivity {
     ActivityDeleteAlarmsBinding activityDeleteAlarmsBinding;
     DeleteAlarmsListAdapter adapter;
+    DeleteAlarmsHandler handler;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.delete_alarms_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch(id) {
+            case android.R.id.home:
+                Toast.makeText(this, "sure?", Toast.LENGTH_LONG).show();
+                return false;
+            case R.id.commit:
+                AlarmManager manager = (AlarmManager) getSystemService(Service.ALARM_SERVICE);
+                try {
+                    handler.onSubmit(this, adapter, manager);
+                    finish();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            default:
+                break;
+        }
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityDeleteAlarmsBinding = DataBindingUtil.setContentView(this, R.layout.activity_delete_alarms);
 
+
         setSupportActionBar(activityDeleteAlarmsBinding.toolbar);
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
+
+        handler = new DeleteAlarmsHandler();
+        activityDeleteAlarmsBinding.setDeleteAlarmsHandler(handler);
 
         try {
             List<Alarm> alarms = AlarmRepo.findAll(this);
