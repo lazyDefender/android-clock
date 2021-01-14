@@ -5,13 +5,15 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import com.example.clock.utils.RandomID;
+
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class Alarm {
-    private long id;
+    private int id;
     private String title;
     private int[] repetitionDays;
     private Tune tune;
@@ -20,10 +22,10 @@ public class Alarm {
     private int min;
     private boolean isActive = true;
 
-    private List<Long> alarmManagerTaskIds;
+    private List<Integer> alarmManagerTaskIds;
 
     public Alarm() {
-        setId(System.currentTimeMillis());
+        setId(RandomID.generate());
         setRepetitionDays(new int[] {});
         setShouldVibrate(false);
         setTitle("Мітка");
@@ -37,11 +39,11 @@ public class Alarm {
         setTitle(title);
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -101,11 +103,11 @@ public class Alarm {
         isActive = active;
     }
 
-    public List<Long> getAlarmManagerTaskIds() {
+    public List<Integer> getAlarmManagerTaskIds() {
         return alarmManagerTaskIds;
     }
 
-    public void setAlarmManagerTaskIds(List<Long> alarmManagerTaskIds) {
+    public void setAlarmManagerTaskIds(List<Integer> alarmManagerTaskIds) {
         this.alarmManagerTaskIds = alarmManagerTaskIds;
     }
 

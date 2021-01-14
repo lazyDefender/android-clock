@@ -56,7 +56,7 @@ public class AlarmActivity extends AppCompatActivity {
 
 
             Bundle extras = getIntent().getExtras();
-            long id = extras.getLong("alarmId");
+            int id = extras.getInt("alarmId");
             Alarm alarm = AlarmRepo.findById(this, id);
             activityAlarmBinding.setAlarm(alarm);
 

@@ -1,18 +1,11 @@
 package com.example.clock.adapters;
 
-import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.clock.DeleteAlarmsActivity;
-import com.example.clock.databinding.ActivityDeleteAlarmsBinding;
-import com.example.clock.databinding.AlarmsListItemBinding;
 import com.example.clock.databinding.DeleteAlarmsListItemBinding;
 import com.example.clock.handlers.DeleteAlarmsHandler;
 import com.example.clock.models.Alarm;
@@ -24,7 +17,7 @@ public class DeleteAlarmsListAdapter extends RecyclerView.Adapter<DeleteAlarmsLi
 
 
     private List<Alarm> alarmsList;
-    private List<Long> deletedIds;
+    private List<Integer> deletedIds;
 
 
     public List<Alarm> getAlarmsList() {
@@ -35,11 +28,11 @@ public class DeleteAlarmsListAdapter extends RecyclerView.Adapter<DeleteAlarmsLi
         this.alarmsList = alarmsList;
     }
 
-    public List<Long> getDeletedIds() {
+    public List<Integer> getDeletedIds() {
         return deletedIds;
     }
 
-    public void setDeletedIds(List<Long> deletedIds) {
+    public void setDeletedIds(List<Integer> deletedIds) {
         this.deletedIds = deletedIds;
     }
 

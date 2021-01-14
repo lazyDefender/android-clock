@@ -94,7 +94,7 @@ public class AlarmFormActivity extends AppCompatActivity{
                     Alarm alarm = activityAlarmFormBinding.getAlarm();
 
                     AlarmManager manager = (AlarmManager) getSystemService(Service.ALARM_SERVICE);
-                    List<Long> alarmManagerTaskIds = AlarmRepo.launchAlarm(this, alarm, manager, AlarmActivity.class);
+                    List<Integer> alarmManagerTaskIds = AlarmRepo.launchAlarm(this, alarm, manager);
                     alarm.setAlarmManagerTaskIds(alarmManagerTaskIds);
                     AlarmRepo.save(this, alarm);
                     AlarmRepo.setNewAlarm(alarm);

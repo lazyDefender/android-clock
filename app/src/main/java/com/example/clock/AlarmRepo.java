@@ -4,28 +4,21 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.PowerManager;
-import android.widget.Toast;
 
 import com.example.clock.json.Json;
 import com.example.clock.models.Alarm;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.example.clock.utils.RandomID;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.UUID;
 
 public class AlarmRepo {
     private static String filename = "alarms";
@@ -80,17 +73,17 @@ public class AlarmRepo {
 
     }
 
-    public static PendingIntent createAlarmPendingIntent(Context context, Alarm alarm, long id) {
+    public static PendingIntent createAlarmPendingIntent(Context context, Alarm alarm, int id) {
         Intent intent = new Intent(context, AlarmActivity.class);
         intent.putExtra("alarmId", alarm.getId());
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, (int) id, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, id, intent, 0);
         return pendingIntent;
     }
 
-    public static List<Long> launchAlarm(Context context, Alarm alarm, AlarmManager manager, Class activityClass) {
+    public static List<Integer> launchAlarm(Context context, Alarm alarm, AlarmManager manager) {
         int i = 0;
         int[] days = alarm.getRepetitionDays();
-        List<Long> alarmManagerTaskIds = new ArrayList<Long>();
+        List<Integer> alarmManagerTaskIds = new ArrayList<>();
 
         do {
             Calendar calendar = Calendar.getInstance();
@@ -100,17 +93,16 @@ public class AlarmRepo {
             calendar.set(Calendar.SECOND, 0);
             calendar.set(Calendar.AM_PM, Calendar.AM);
 
-            PendingIntent pendingIntent = createAlarmPendingIntent(context, alarm, System.currentTimeMillis());
-
-            long alarmManagerTaskId = calendar.getTimeInMillis();
+            int alarmManagerTaskId = RandomID.generate();
+            PendingIntent pendingIntent = createAlarmPendingIntent(context, alarm, alarmManagerTaskId);
 
             if(days.length > 0) {
                 calendar.set(Calendar.DAY_OF_WEEK, days[i] + 1);
-                manager.setRepeating(AlarmManager.RTC_WAKEUP, alarmManagerTaskId, AlarmManager.INTERVAL_DAY * 7, pendingIntent);
+                manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 7, pendingIntent);
             }
 
             else {
-                manager.set(AlarmManager.RTC_WAKEUP, alarmManagerTaskId, pendingIntent);
+                manager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
             }
 
             alarmManagerTaskIds.add(alarmManagerTaskId);

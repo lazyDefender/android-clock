@@ -26,9 +26,9 @@ public class DeleteAlarmsHandler {
         adapter = (DeleteAlarmsListAdapter) recycler.getAdapter();
 
         List<Alarm> alarms = adapter.getAlarmsList();
-        List<Long> deletedIds = adapter.getDeletedIds();
+        List<Integer> deletedIds = adapter.getDeletedIds();
 
-        long id = alarm.getId();
+        int id = alarm.getId();
         deletedIds.add(id);
         int index = alarms.indexOf(alarm);
         alarms.remove(index);
@@ -37,20 +37,22 @@ public class DeleteAlarmsHandler {
     }
 
     public void onSubmit(Context context, DeleteAlarmsListAdapter adapter, AlarmManager manager) throws IOException, ClassNotFoundException {
-            List<Long> deletedIds = adapter.getDeletedIds();
+            List<Integer> deletedIds = adapter.getDeletedIds();
+            try {
+                for (int id : deletedIds) {
+                    Alarm alarm = AlarmRepo.findById(context, id);
 
-
-            for(Long id : deletedIds) {
-
-                Alarm alarm = AlarmRepo.findById(context, id);
-
-                if(alarm != null) {
-                    for(Long taskId : alarm.getAlarmManagerTaskIds()) {
-                        PendingIntent pendingIntent = AlarmRepo.createAlarmPendingIntent(context, alarm, taskId);
-                        manager.cancel(pendingIntent);
+                    if (alarm != null) {
+                        for (int taskId : alarm.getAlarmManagerTaskIds()) {
+                            PendingIntent pendingIntent = AlarmRepo.createAlarmPendingIntent(context, alarm, taskId);
+                            manager.cancel(pendingIntent);
+                        }
                     }
+                    AlarmRepo.delete(context, id);
                 }
-                AlarmRepo.delete(context, id);
+            }
+            catch (Exception e) {
+                new String();
             }
             new String();
     }
