@@ -29,6 +29,7 @@ import java.util.List;
 public class SelectTuneActivity extends AppCompatActivity {
     ActivitySelectSignalBinding activitySelectSignalBinding;
     private TunesListAdapter adapter;
+    boolean tuneWasSelected;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

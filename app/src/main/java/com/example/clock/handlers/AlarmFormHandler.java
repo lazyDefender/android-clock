@@ -26,6 +26,16 @@ import java.util.List;
 public class AlarmFormHandler {
     ActivityAlarmFormBinding binding;
 
+    public boolean formWasTouched() {
+        return formWasTouched;
+    }
+
+    public void setFormWasTouched(boolean formWasTouched) {
+        this.formWasTouched = formWasTouched;
+    }
+
+    boolean formWasTouched;
+
     private int[] getRepetitionDaysFromCheckedItems(boolean[] checkedItems) {
         List<Integer> days = new ArrayList<>();
         for(int j=0;j<checkedItems.length;j++) {
@@ -58,6 +68,7 @@ public class AlarmFormHandler {
                     Alarm alarm = binding.getAlarm();
                     alarm.setRepetitionDays(repetitionDays);
                     binding.setAlarm(alarm);
+                    setFormWasTouched(true);
                 })
                 .setMultiChoiceItems(items, checkedItems, (dialogInterface, which, checked) -> checkedItems[which] = checked)
         ;
@@ -76,6 +87,7 @@ public class AlarmFormHandler {
         Alarm alarm = binding.getAlarm();
         alarm.setShouldVibrate(!alarm.getShouldVibrate());
         binding.setAlarm(alarm);
+        setFormWasTouched(true);
     }
 
     public void showTitleDialog(final View view) {
@@ -96,6 +108,7 @@ public class AlarmFormHandler {
                     String title = titleInput.getText().toString();
                     alarm.setTitle(title);
                     binding.setAlarm(alarm);
+                    setFormWasTouched(true);
                 }));
         AlertDialog dialog = builder.create();
 

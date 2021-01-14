@@ -37,7 +37,7 @@ public class AlarmFormActivity extends AppCompatActivity{
 
     ActivityAlarmFormBinding activityAlarmFormBinding;
     AlarmFormHandler alarmFormHandler;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

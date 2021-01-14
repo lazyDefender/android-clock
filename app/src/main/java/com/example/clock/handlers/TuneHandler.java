@@ -21,6 +21,7 @@ public abstract class TuneHandler {
     private ActivitySelectSignalBinding activitySelectSignalBinding;
     private int selectedTuneIndex;
 
+
     public TuneHandler(ActivitySelectSignalBinding binding, int selectedTuneIndex) {
         this.activitySelectSignalBinding = binding;
         this.selectedTuneIndex = selectedTuneIndex;
@@ -31,6 +32,8 @@ public abstract class TuneHandler {
     public void onSelect(View view, Tune tune) {
         List<Tune> tunesList = activitySelectSignalBinding.getTunes();
         int index = tunesList.indexOf(tune);
+
+        
 
         Tune currentSelectedTune = tunesList.get(selectedTuneIndex);
         currentSelectedTune.setSelected(false);
