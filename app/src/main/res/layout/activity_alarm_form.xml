@@ -101,7 +101,7 @@
                        android:paddingTop="8dp"
                        android:paddingBottom="8dp"
                        android:clickable="true"
-                       android:onClick="@{alarmFormHandler::showSignalSelect}">
+                       android:onClick="@{(view) -> alarmFormHandler.showSignalSelect(view, alarm.id)}">
 
                        <TextView
                            android:id="@+id/title2"

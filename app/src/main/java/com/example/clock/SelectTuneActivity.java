@@ -21,15 +21,18 @@ import android.widget.Toast;
 import com.example.clock.adapters.TunesListAdapter;
 import com.example.clock.databinding.ActivitySelectSignalBinding;
 import com.example.clock.handlers.TuneHandler;
+import com.example.clock.models.Alarm;
 import com.example.clock.models.Tune;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SelectTuneActivity extends AppCompatActivity {
     ActivitySelectSignalBinding activitySelectSignalBinding;
     private TunesListAdapter adapter;
-    boolean tuneWasSelected;
+    private TuneHandler handler;
+    private int alarmId;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -72,42 +75,51 @@ public class SelectTuneActivity extends AppCompatActivity {
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
 
-
-
         activitySelectSignalBinding.recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         activitySelectSignalBinding.recyclerView.setAdapter(adapter);
         activitySelectSignalBinding.recyclerView.setNestedScrollingEnabled(false);
 
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        alarmId = extras.getInt("alarmId");
+
 
         List<Tune> tunesList = getAlarmTunes(this);
         activitySelectSignalBinding.setTunes(tunesList);
-        TuneHandler tuneHandler = new TuneHandler(activitySelectSignalBinding, 0) {
+        handler = new TuneHandler(activitySelectSignalBinding, 0) {
             @Override
             public void afterHandle() {
                 adapter.notifyDataSetChanged();
             }
         };
-        adapter = new TunesListAdapter(activitySelectSignalBinding.getTunes(), tuneHandler);
+        adapter = new TunesListAdapter(activitySelectSignalBinding.getTunes(), handler);
         activitySelectSignalBinding.recyclerView.setAdapter(adapter);
 
     }
 
-    public void onBack() {
+    public void onBack() throws IOException, ClassNotFoundException {
         List<Tune> tunes = activitySelectSignalBinding.getTunes();
-        Tune selectedTune = tunes
-                .stream()
-                .filter(tune -> tune.isSelected())
-                .findFirst()
-                .orElse(null);
-        Intent intent = new Intent();
-        intent.putExtra("tune", selectedTune);
-        setResult(Activity.RESULT_OK, intent);
-        finish();
+        Alarm currentAlarm = new Alarm();
+        try {
+            currentAlarm = AlarmRepo.findById(this, alarmId);
+        }
+        catch(Exception e) {
+
+        }
+
+        Tune currentTune = currentAlarm.getTune();
+        handler.onBack(this, tunes, currentTune.getId());
     }
 
     @Override
     public void onBackPressed() {
-        onBack();
+        try {
+            onBack();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public List<Tune> getAlarmTunes(Context context) {
@@ -135,7 +147,13 @@ public class SelectTuneActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch(id) {
             case android.R.id.home:
-                onBack();
+                try {
+                    onBack();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
                 return true;
             default:
                 break;

@@ -32,6 +32,7 @@ public class Alarm {
         LocalTime time = LocalTime.now();
         setHour(time.getHour());
         setMin(time.getMinute());
+        setTune(new Tune());
         setAlarmManagerTaskIds(new ArrayList<>());
     }
 

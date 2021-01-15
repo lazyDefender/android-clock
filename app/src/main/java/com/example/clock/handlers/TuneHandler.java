@@ -1,5 +1,8 @@
 package com.example.clock.handlers;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -33,8 +36,6 @@ public abstract class TuneHandler {
         List<Tune> tunesList = activitySelectSignalBinding.getTunes();
         int index = tunesList.indexOf(tune);
 
-        
-
         Tune currentSelectedTune = tunesList.get(selectedTuneIndex);
         currentSelectedTune.setSelected(false);
         tunesList.set(selectedTuneIndex, currentSelectedTune);
@@ -52,6 +53,22 @@ public abstract class TuneHandler {
         Ringtone ringtone = RingtoneManager.getRingtone(view.getContext(), uri);
         ringtone.play();
 
+    }
+
+    public void onBack(Activity activity, List<Tune> tunes, String defaultTuneId) {
+        Tune selectedTune = tunes
+                .stream()
+                .filter(tune -> tune.isSelected())
+                .findFirst()
+                .orElse(null);
+        Intent intent = new Intent();
+        boolean wasTuneChanged = selectedTune.getId() != defaultTuneId;
+
+        intent.putExtra("tune", selectedTune);
+        intent.putExtra("wasTuneChanged", wasTuneChanged);
+
+        activity.setResult(Activity.RESULT_OK, intent);
+        activity.finish();
     }
 
 }

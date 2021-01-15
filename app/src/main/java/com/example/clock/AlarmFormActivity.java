@@ -74,8 +74,9 @@ public class AlarmFormActivity extends AppCompatActivity{
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if(requestCode == RequestCodes.SHOW_TUNE_SELECT && resultCode == Activity.RESULT_OK) {
-            Bundle bundle = intent.getExtras();
-            Tune tune = (Tune) bundle.get("tune");
+            Bundle extras = intent.getExtras();
+            Tune tune = (Tune) extras.get("tune");
+            boolean wasTuneChanged = extras.getBoolean("wasTuneChanged");
             Alarm alarm = activityAlarmFormBinding.getAlarm();
             alarm.setTune(tune);
             activityAlarmFormBinding.setAlarm(alarm);

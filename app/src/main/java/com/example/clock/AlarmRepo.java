@@ -50,7 +50,7 @@ public class AlarmRepo {
             sb.append(s);
         }
         return sb.toString();
-}
+    }
 
 
     public static void save(Context context, Alarm alarm) throws IOException, ClassNotFoundException {
@@ -130,13 +130,13 @@ public class AlarmRepo {
         return alarms;
     }
 
-    public static Alarm findById(Context context, long id) throws IOException, ClassNotFoundException {
+    public static Alarm findById(Context context, int id) throws IOException, ClassNotFoundException {
         List<Alarm> alarms = findAll(context);
         Alarm foundAlarm = alarms.stream().filter(alarm -> alarm.getId() == id).findFirst().get();
         return foundAlarm;
     }
 
-    public static void delete(Context context, long id) throws IOException, ClassNotFoundException {
+    public static void delete(Context context, int id) throws IOException, ClassNotFoundException {
         List<Alarm> alarms = findAll(context);
         Alarm alarmToDelete = alarms
                 .stream()

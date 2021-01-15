@@ -75,10 +75,11 @@ public class AlarmFormHandler {
         builder.show();
     }
 
-    public void showSignalSelect(final View view) {
+    public void showSignalSelect(final View view, int alarmId) {
         Context context = view.getContext();
         Activity currentActivity = (Activity) context;
         Intent intent = new Intent(context, SelectTuneActivity.class);
+        intent.putExtra("alarmId", alarmId);
         currentActivity.startActivityForResult(intent, RequestCodes.SHOW_TUNE_SELECT);
     }
 
