@@ -132,7 +132,11 @@ public class AlarmRepo {
 
     public static Alarm findById(Context context, int id) throws IOException, ClassNotFoundException {
         List<Alarm> alarms = findAll(context);
-        Alarm foundAlarm = alarms.stream().filter(alarm -> alarm.getId() == id).findFirst().get();
+        Alarm foundAlarm = alarms
+                .stream()
+                .filter(alarm -> alarm.getId() == id)
+                .findFirst()
+                .orElse(new Alarm());
         return foundAlarm;
     }
 

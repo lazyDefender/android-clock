@@ -17,11 +17,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".SelectCustomTuneActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            ></activity>
+        <activity
             android:name=".AlarmActivity"
             android:label="@string/title_activity_alarm"
-            android:theme="@style/AppTheme.NoActionBar"
             android:showOnLockScreen="true"
-            android:turnScreenOn="true"></activity>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:turnScreenOn="true" />
         <activity
             android:name=".DeleteAlarmsActivity"
             android:label="@string/title_activity_delete_alarms"

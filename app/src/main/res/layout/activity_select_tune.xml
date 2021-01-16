@@ -6,6 +6,9 @@
         <variable
             name="tunes"
             type="java.util.List&lt;Tune>" />
+        <variable
+            name="handler"
+            type="com.example.clock.handlers.TuneHandler" />
     </data>
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -54,7 +57,7 @@
                         android:paddingTop="8dp"
                         android:paddingBottom="8dp"
                         android:clickable="true"
-
+                        android:onClick="@{handler::openSelectCustomTuneActivity}"
                         >
 
                         <TextView
@@ -68,7 +71,7 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"
                             android:text="Музика на пристрої"
-                            tools:text="Музика на пристрої"/>
+                            tools:text="Музика на пристрої" />
 
 
                         <LinearLayout

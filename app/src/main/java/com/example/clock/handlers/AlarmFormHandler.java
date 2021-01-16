@@ -18,6 +18,7 @@ import androidx.databinding.DataBindingUtil;
 import com.example.clock.SelectTuneActivity;
 import com.example.clock.databinding.ActivityAlarmFormBinding;
 import com.example.clock.models.Alarm;
+import com.example.clock.models.Tune;
 import com.example.clock.utils.RequestCodes;
 
 import java.util.ArrayList;
@@ -75,11 +76,11 @@ public class AlarmFormHandler {
         builder.show();
     }
 
-    public void showSignalSelect(final View view, int alarmId) {
+    public void showSignalSelect(final View view, Tune tune) {
         Context context = view.getContext();
         Activity currentActivity = (Activity) context;
         Intent intent = new Intent(context, SelectTuneActivity.class);
-        intent.putExtra("alarmId", alarmId);
+        intent.putExtra("tune", tune);
         currentActivity.startActivityForResult(intent, RequestCodes.SHOW_TUNE_SELECT);
     }
 

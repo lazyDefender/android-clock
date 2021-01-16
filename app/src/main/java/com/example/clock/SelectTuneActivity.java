@@ -7,19 +7,16 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.media.RingtoneManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.example.clock.adapters.TunesListAdapter;
-import com.example.clock.databinding.ActivitySelectSignalBinding;
+import com.example.clock.databinding.ActivitySelectTuneBinding;
 import com.example.clock.handlers.TuneHandler;
 import com.example.clock.models.Alarm;
 import com.example.clock.models.Tune;
@@ -29,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SelectTuneActivity extends AppCompatActivity {
-    ActivitySelectSignalBinding activitySelectSignalBinding;
+    ActivitySelectTuneBinding activitySelectTuneBinding;
     private TunesListAdapter adapter;
     private TuneHandler handler;
     private int alarmId;
@@ -70,35 +67,39 @@ public class SelectTuneActivity extends AppCompatActivity {
 
         requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, 999);
 
-        activitySelectSignalBinding = DataBindingUtil.setContentView(this, R.layout.activity_select_signal);
-        setSupportActionBar(activitySelectSignalBinding.toolbar);
+        activitySelectTuneBinding = DataBindingUtil.setContentView(this, R.layout.activity_select_tune);
+        setSupportActionBar(activitySelectTuneBinding.toolbar);
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
 
-        activitySelectSignalBinding.recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        activitySelectSignalBinding.recyclerView.setAdapter(adapter);
-        activitySelectSignalBinding.recyclerView.setNestedScrollingEnabled(false);
+        activitySelectTuneBinding.recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        activitySelectTuneBinding.recyclerView.setAdapter(adapter);
+        activitySelectTuneBinding.recyclerView.setNestedScrollingEnabled(false);
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
-        alarmId = extras.getInt("alarmId");
-
+        Tune selectedTune = (Tune) extras.get("tune");
+        String selectedTuneId = selectedTune.getId();
 
         List<Tune> tunesList = getAlarmTunes(this);
-        activitySelectSignalBinding.setTunes(tunesList);
-        handler = new TuneHandler(activitySelectSignalBinding, 0) {
+
+        int selectedTuneIndex = selectedTuneId.length() > 0 ?
+                tunesList.indexOf(selectedTune) : 0;
+        activitySelectTuneBinding.setTunes(tunesList);
+        handler = new TuneHandler(activitySelectTuneBinding, selectedTuneIndex) {
             @Override
             public void afterHandle() {
                 adapter.notifyDataSetChanged();
             }
         };
-        adapter = new TunesListAdapter(activitySelectSignalBinding.getTunes(), handler);
-        activitySelectSignalBinding.recyclerView.setAdapter(adapter);
+        adapter = new TunesListAdapter(activitySelectTuneBinding.getTunes(), handler);
+        activitySelectTuneBinding.recyclerView.setAdapter(adapter);
 
+        activitySelectTuneBinding.setHandler(handler);
     }
 
     public void onBack() throws IOException, ClassNotFoundException {
-        List<Tune> tunes = activitySelectSignalBinding.getTunes();
+        List<Tune> tunes = activitySelectTuneBinding.getTunes();
         Alarm currentAlarm = new Alarm();
         try {
             currentAlarm = AlarmRepo.findById(this, alarmId);
