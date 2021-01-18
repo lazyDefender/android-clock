@@ -15,13 +15,20 @@ import com.example.clock.models.Tune;
 import java.util.List;
 
 public class CustomTunesListAdapter extends RecyclerView.Adapter<CustomTunesListAdapter.TuneViewHolder> {
-    private List<Tune> tunesList;
+    private List<Tune> tunes;
     private CustomTuneHandler tuneHandler;
 
-    public CustomTunesListAdapter(List<Tune> tunesList, CustomTuneHandler tuneHandler) {
-
-        this.tunesList = tunesList;
+    public CustomTunesListAdapter(List<Tune> tunes, CustomTuneHandler tuneHandler) {
+        this.tunes = tunes;
         this.tuneHandler = tuneHandler;
+    }
+
+    public List<Tune> getTunes() {
+        return tunes;
+    }
+
+    public void setTunes(List<Tune> tunes) {
+        this.tunes = tunes;
     }
 
     @NonNull
@@ -38,13 +45,13 @@ public class CustomTunesListAdapter extends RecyclerView.Adapter<CustomTunesList
 
     @Override
     public void onBindViewHolder(@NonNull TuneViewHolder holder, int position) {
-        Tune tune = tunesList.get(position);
+        Tune tune = tunes.get(position);
         holder.bind(tune, tuneHandler);
     }
 
     @Override
     public int getItemCount() {
-        return tunesList.size();
+        return tunes.size();
     }
 
     class TuneViewHolder extends RecyclerView.ViewHolder {

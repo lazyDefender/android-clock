@@ -8,6 +8,17 @@ public class Tune implements Parcelable {
     private String title;
     private String directoryUri;
     private boolean isSelected;
+    private boolean isCustom;
+
+    public boolean isCustom() {
+        return isCustom;
+    }
+
+    public void setCustom(boolean custom) {
+        isCustom = custom;
+    }
+
+
 
     public static final Creator<Tune> CREATOR = new Creator<Tune>() {
         @Override

@@ -1,5 +1,6 @@
 package com.example.clock.handlers;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Service;
@@ -76,11 +77,17 @@ public class AlarmFormHandler {
         builder.show();
     }
 
-    public void showSignalSelect(final View view, Tune tune) {
+    public void requestStoragePermissions(View view) {
         Context context = view.getContext();
+        Activity activity = (Activity) context;
+        activity.requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, RequestCodes.READ_EXTERNAL_STORAGE_PERMISSION);
+    }
+
+    public void showSignalSelect(Context context, Tune tune) {
         Activity currentActivity = (Activity) context;
         Intent intent = new Intent(context, SelectTuneActivity.class);
         intent.putExtra("tune", tune);
+        intent.putExtra("isCustom", tune.isCustom());
         currentActivity.startActivityForResult(intent, RequestCodes.SHOW_TUNE_SELECT);
     }
 

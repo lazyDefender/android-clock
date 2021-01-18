@@ -9,6 +9,9 @@
         <variable
             name="handler"
             type="com.example.clock.handlers.CustomTuneHandler" />
+        <variable
+            name="result"
+            type="java.util.Map" />
     </data>
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"

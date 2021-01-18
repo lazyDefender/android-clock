@@ -9,6 +9,9 @@
         <variable
             name="handler"
             type="com.example.clock.handlers.TuneHandler" />
+        <variable
+            name="tune"
+            type="com.example.clock.models.Tune" />
     </data>
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -57,7 +60,7 @@
                         android:paddingTop="8dp"
                         android:paddingBottom="8dp"
                         android:clickable="true"
-                        android:onClick="@{handler::openSelectCustomTuneActivity}"
+                        android:onClick="@{(view) -> handler.openSelectCustomTuneActivity(view, tune)}"
                         >
 
                         <TextView

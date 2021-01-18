@@ -8,14 +8,9 @@ import android.content.Intent;
 import android.widget.Toast;
 
 import com.example.clock.models.Alarm;
+import com.example.clock.repos.AlarmRepo;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class BootReceiver extends BroadcastReceiver {

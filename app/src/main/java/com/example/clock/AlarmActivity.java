@@ -1,6 +1,5 @@
 package com.example.clock;
 
-import android.content.Context;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -10,8 +9,7 @@ import android.os.Bundle;
 import com.example.clock.databinding.ActivityAlarmBinding;
 import com.example.clock.models.Alarm;
 import com.example.clock.models.Tune;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import com.example.clock.repos.AlarmRepo;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -20,7 +18,6 @@ import androidx.databinding.DataBindingUtil;
 import android.os.PowerManager;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 public class AlarmActivity extends AppCompatActivity {
 
@@ -61,9 +58,17 @@ public class AlarmActivity extends AppCompatActivity {
             activityAlarmBinding.setAlarm(alarm);
 
             Tune tune = alarm.getTune();
+            boolean isCustom = tune.isCustom();
             String tuneId = tune.getId();
-            String tunePath = tuneId.length() > 0 ? '/' + tuneId : tuneId;
-            String tuneUri = tune.getDirectoryUri() + tunePath;
+            String tuneUri = "";
+            if(!isCustom) {
+                String tunePath = tuneId.length() > 0 ? '/' + tuneId : tuneId;
+                tuneUri = tune.getDirectoryUri() + tunePath;
+            }
+            else {
+                tuneUri = tune.getDirectoryUri();
+            }
+
             Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), Uri.parse(tuneUri));
             r.play();
         }

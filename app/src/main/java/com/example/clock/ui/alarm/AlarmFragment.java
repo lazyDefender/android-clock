@@ -1,12 +1,9 @@
 package com.example.clock.ui.alarm;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,19 +11,15 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.example.clock.AlarmRepo;
-import com.example.clock.MainActivity;
+import com.example.clock.repos.AlarmRepo;
 import com.example.clock.adapters.AlarmsListAdapter;
 import com.example.clock.databinding.FragmentAlarmBinding;
 import com.example.clock.handlers.AlarmHandler;
 import com.example.clock.models.Alarm;
-import com.example.clock.models.Tune;
-import com.example.clock.utils.RequestCodes;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
 
 public class AlarmFragment extends Fragment {
 

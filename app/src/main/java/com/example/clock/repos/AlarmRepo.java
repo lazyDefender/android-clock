@@ -1,10 +1,11 @@
-package com.example.clock;
+package com.example.clock.repos;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 
+import com.example.clock.AlarmActivity;
 import com.example.clock.json.Json;
 import com.example.clock.models.Alarm;
 import com.example.clock.utils.RandomID;
@@ -18,7 +19,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.UUID;
 
 public class AlarmRepo {
     private static String filename = "alarms";

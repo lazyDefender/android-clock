@@ -8,37 +8,42 @@ import androidx.databinding.DataBindingUtil;
 
 import android.app.Activity;
 import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.clock.databinding.ActivityAlarmFormBinding;
 import com.example.clock.handlers.AlarmFormHandler;
 import com.example.clock.models.Alarm;
 import com.example.clock.models.Tune;
+import com.example.clock.repos.AlarmRepo;
 import com.example.clock.utils.RequestCodes;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.io.IOException;
-import java.time.LocalTime;
-import java.util.Calendar;
 import java.util.List;
-import java.util.TimeZone;
 
 public class AlarmFormActivity extends AppCompatActivity{
 
     ActivityAlarmFormBinding activityAlarmFormBinding;
     AlarmFormHandler alarmFormHandler;
-    
+    boolean wasTuneChanged;
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == RequestCodes.READ_EXTERNAL_STORAGE_PERMISSION && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            alarmFormHandler.showSignalSelect(this, activityAlarmFormBinding.getAlarm().getTune());
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,7 +81,9 @@ public class AlarmFormActivity extends AppCompatActivity{
         if(requestCode == RequestCodes.SHOW_TUNE_SELECT && resultCode == Activity.RESULT_OK) {
             Bundle extras = intent.getExtras();
             Tune tune = (Tune) extras.get("tune");
-            boolean wasTuneChanged = extras.getBoolean("wasTuneChanged");
+            boolean isTuneCustom = extras.getBoolean("isCustom");
+            wasTuneChanged = extras.getBoolean("wasTuneChanged");
+            tune.setCustom(isTuneCustom);
             Alarm alarm = activityAlarmFormBinding.getAlarm();
             alarm.setTune(tune);
             activityAlarmFormBinding.setAlarm(alarm);
@@ -88,12 +95,12 @@ public class AlarmFormActivity extends AppCompatActivity{
         int id = item.getItemId();
         switch(id) {
             case android.R.id.home:
+
                 Toast.makeText(this, "sure?", Toast.LENGTH_LONG).show();
                 return false;
             case R.id.save_alarm:
                 try {
                     Alarm alarm = activityAlarmFormBinding.getAlarm();
-
                     AlarmManager manager = (AlarmManager) getSystemService(Service.ALARM_SERVICE);
                     List<Integer> alarmManagerTaskIds = AlarmRepo.launchAlarm(this, alarm, manager);
                     alarm.setAlarmManagerTaskIds(alarmManagerTaskIds);

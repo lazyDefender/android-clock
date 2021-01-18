@@ -1,16 +1,16 @@
 package com.example.clock;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.Manifest;
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
-import android.media.RingtoneManager;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,10 +20,14 @@ import com.example.clock.databinding.ActivitySelectTuneBinding;
 import com.example.clock.handlers.TuneHandler;
 import com.example.clock.models.Alarm;
 import com.example.clock.models.Tune;
+import com.example.clock.repos.AlarmRepo;
+import com.example.clock.repos.TuneRepo;
+import com.example.clock.utils.RequestCodes;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SelectTuneActivity extends AppCompatActivity {
     ActivitySelectTuneBinding activitySelectTuneBinding;
@@ -31,41 +35,34 @@ public class SelectTuneActivity extends AppCompatActivity {
     private TuneHandler handler;
     private int alarmId;
 
+    List<Tune> tunesList;
+
+    public int getSelectedTuneIndex() {
+        return selectedTuneIndex;
+    }
+
+    public void setSelectedTuneIndex(int selectedTuneIndex) {
+        this.selectedTuneIndex = selectedTuneIndex;
+    }
+
+    private int selectedTuneIndex = 0;
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        if(requestCode == 999 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//            Toast.makeText(this, "granted!", Toast.LENGTH_LONG).show();
-//            ContentResolver contentResolver = getContentResolver();
-//            Uri uriExternal = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-//            Cursor cursor = null;
-//            try {
-//                cursor = contentResolver.query(uriExternal, null, null, null, null);
-//            }
-//            catch(Exception e) {
-//                new String();
-//            }
-//            if (cursor != null && cursor.moveToFirst()) {
-//                do {
-//                    String songTitle = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
-//                    String songId = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
-//                    Uri songUri = Uri.withAppendedPath(uriExternal, songId);
-//                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-//                    Tune r = RingtoneManager.getRingtone(getApplicationContext(), songUri);
-//                    r.play();
-//                    new String();
-//
-//                } while (cursor.moveToNext());
-//            }
-//
-//        }
+        if(requestCode == RequestCodes.READ_EXTERNAL_STORAGE_PERMISSION && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+        }
+        else {
+            finish();
+        }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, 999);
+//        requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, RequestCodes.READ_EXTERNAL_STORAGE_PERMISSION);
 
         activitySelectTuneBinding = DataBindingUtil.setContentView(this, R.layout.activity_select_tune);
         setSupportActionBar(activitySelectTuneBinding.toolbar);
@@ -79,17 +76,43 @@ public class SelectTuneActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         Tune selectedTune = (Tune) extras.get("tune");
+        boolean isCustom = extras.getBoolean("isCustom");
+
+        selectedTune.setCustom(isCustom);
+        activitySelectTuneBinding.setTune(selectedTune);
+
         String selectedTuneId = selectedTune.getId();
 
-        List<Tune> tunesList = getAlarmTunes(this);
+        tunesList = TuneRepo.getAlarmTunes(this);
 
-        int selectedTuneIndex = selectedTuneId.length() > 0 ?
-                tunesList.indexOf(selectedTune) : 0;
+        Tune lastSelected = tunesList.get(selectedTuneIndex);
+        lastSelected.setSelected(false);
+        tunesList.set(selectedTuneIndex, lastSelected);
+
+        List<String> ids = tunesList
+                .stream()
+                .map(tune -> tune.getId())
+                .collect(Collectors.toList());
+        selectedTuneIndex = ids.indexOf(selectedTuneId);
+
+        if(selectedTuneIndex < 0) selectedTuneIndex = 0;
+
+        if(!isCustom) {
+            Tune newSelected = tunesList.get(selectedTuneIndex);
+            newSelected.setSelected(true);
+            tunesList.set(selectedTuneIndex, newSelected);
+        }
+        else selectedTuneIndex = -1;
+
         activitySelectTuneBinding.setTunes(tunesList);
+
+
+
         handler = new TuneHandler(activitySelectTuneBinding, selectedTuneIndex) {
             @Override
-            public void afterHandle() {
+            public void afterHandle(int selectedTuneIndex) {
                 adapter.notifyDataSetChanged();
+                setSelectedTuneIndex(selectedTuneIndex);
             }
         };
         adapter = new TunesListAdapter(activitySelectTuneBinding.getTunes(), handler);
@@ -98,18 +121,33 @@ public class SelectTuneActivity extends AppCompatActivity {
         activitySelectTuneBinding.setHandler(handler);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if(requestCode == RequestCodes.SHOW_CUSTOM_TUNE_SELECT && resultCode == Activity.RESULT_OK) {
+            Bundle extras = intent.getExtras();
+            Tune tune = (Tune) extras.get("tune");
+            boolean isCustom = extras.getBoolean("isCustom");
+            tune.setCustom(isCustom);
+            boolean wasTuneChanged = extras.getBoolean("wasTuneChanged");
+            if(wasTuneChanged) {
+                if(selectedTuneIndex > -1) {
+                    Tune prevSelected = tunesList.get(selectedTuneIndex);
+                    prevSelected.setSelected(false);
+                }
+                adapter.notifyItemChanged(selectedTuneIndex);
+                activitySelectTuneBinding.setTune(tune);
+            }
+
+            new String();
+        }
+    }
+
     public void onBack() throws IOException, ClassNotFoundException {
         List<Tune> tunes = activitySelectTuneBinding.getTunes();
-        Alarm currentAlarm = new Alarm();
-        try {
-            currentAlarm = AlarmRepo.findById(this, alarmId);
-        }
-        catch(Exception e) {
 
-        }
-
-        Tune currentTune = currentAlarm.getTune();
-        handler.onBack(this, tunes, currentTune.getId());
+        Tune currentTune = activitySelectTuneBinding.getTune();
+        handler.onBack(this, tunes, currentTune);
     }
 
     @Override
@@ -123,25 +161,7 @@ public class SelectTuneActivity extends AppCompatActivity {
         }
     }
 
-    public List<Tune> getAlarmTunes(Context context) {
-        RingtoneManager manager = new RingtoneManager(context);
-        manager.setType(RingtoneManager.TYPE_ALARM);
-        Cursor cursor = manager.getCursor();
-        List<Tune> tunes = new ArrayList<>();
 
-        while (cursor.moveToNext()) {
-            String id = cursor.getString(RingtoneManager.ID_COLUMN_INDEX);
-            String ringtoneTitle = cursor.getString(RingtoneManager.TITLE_COLUMN_INDEX);
-            String directoryUri = cursor.getString(RingtoneManager.URI_COLUMN_INDEX);
-            Tune tune = new Tune(id, ringtoneTitle, directoryUri);
-            tunes.add(tune);
-        }
-
-        Tune firstTune = tunes.get(0);
-        firstTune.setSelected(true);
-        tunes.set(0, firstTune);
-        return tunes;
-    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

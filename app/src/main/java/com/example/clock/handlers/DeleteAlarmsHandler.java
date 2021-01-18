@@ -4,14 +4,12 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.clock.AlarmRepo;
+import com.example.clock.repos.AlarmRepo;
 import com.example.clock.adapters.DeleteAlarmsListAdapter;
-import com.example.clock.databinding.ActivityDeleteAlarmsBinding;
 import com.example.clock.models.Alarm;
 
 import java.io.IOException;

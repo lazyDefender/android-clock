@@ -8,21 +8,16 @@ import com.example.clock.adapters.DeleteAlarmsListAdapter;
 import com.example.clock.databinding.ActivityDeleteAlarmsBinding;
 import com.example.clock.handlers.DeleteAlarmsHandler;
 import com.example.clock.models.Alarm;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import com.example.clock.repos.AlarmRepo;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import java.io.IOException;

@@ -15,6 +15,8 @@ import com.example.clock.databinding.ActivitySelectCustomTuneBinding;
 import com.example.clock.handlers.CustomTuneHandler;
 import com.example.clock.handlers.TuneHandler;
 import com.example.clock.models.Tune;
+import com.example.clock.repos.TuneRepo;
+import com.example.clock.utils.RequestCodes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +26,18 @@ public class SelectCustomTuneActivity extends AppCompatActivity {
     private CustomTunesListAdapter adapter;
     private CustomTuneHandler handler;
     private int alarmId;
+    private String defaultTuneId;
+
+    @Override
+    public void onBackPressed() {
+        handler.onBack(this, adapter.getTunes(), defaultTuneId);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, 999);
+        requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, RequestCodes.READ_EXTERNAL_STORAGE_PERMISSION);
 
         activitySelectCustomTuneBinding = DataBindingUtil.setContentView(this, R.layout.activity_select_custom_tune);
 
@@ -42,10 +50,34 @@ public class SelectCustomTuneActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
+        Tune defaultTune = (Tune) extras.get("tune");
+        boolean isCustom = extras.getBoolean("isCustom");
+        defaultTune.setCustom(isCustom);
 
-        List<Tune> tunesList = new ArrayList<>();
+        defaultTuneId = defaultTune.getId();
+
+        List<Tune> tunesList = TuneRepo.getCustomTunes(this);
+        int index = -1;
+        if(defaultTune.isCustom()) {
+            for(int i = 0; i < tunesList.size(); i++) {
+                Tune tune = tunesList.get(i);
+                String id = tune.getId();
+                if(id.equals(defaultTuneId)) {
+                    index = i;
+                    tune.setSelected(true);
+                    break;
+                }
+            }
+        }
+
         activitySelectCustomTuneBinding.setTunes(tunesList);
-        handler = new CustomTuneHandler(activitySelectCustomTuneBinding, 0);
+        handler = new CustomTuneHandler(activitySelectCustomTuneBinding, index) {
+            @Override
+            public void afterHandle(int prevTuneIndex, int newTuneIndex ) {
+                adapter.notifyItemChanged(prevTuneIndex);
+                adapter.notifyItemChanged(newTuneIndex);
+            }
+        };
         adapter = new CustomTunesListAdapter(activitySelectCustomTuneBinding.getTunes(), handler);
         activitySelectCustomTuneBinding.recyclerView.setAdapter(adapter);
 

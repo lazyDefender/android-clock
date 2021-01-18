@@ -25,6 +25,7 @@ import java.util.List;
 public abstract class TuneHandler {
     private ActivitySelectTuneBinding activitySelectTuneBinding;
     private int selectedTuneIndex;
+    Ringtone ringtone;
 
 
     public TuneHandler(ActivitySelectTuneBinding binding, int selectedTuneIndex) {
@@ -32,15 +33,19 @@ public abstract class TuneHandler {
         this.selectedTuneIndex = selectedTuneIndex;
     }
 
-    public abstract void afterHandle();
+    public abstract void afterHandle(int selectedTuneIndex);
 
     public void onSelect(View view, Tune tune) {
+        if(ringtone != null && ringtone.isPlaying())
+        ringtone.stop();
         List<Tune> tunesList = activitySelectTuneBinding.getTunes();
         int index = tunesList.indexOf(tune);
 
-        Tune currentSelectedTune = tunesList.get(selectedTuneIndex);
-        currentSelectedTune.setSelected(false);
-        tunesList.set(selectedTuneIndex, currentSelectedTune);
+        if(selectedTuneIndex > -1) {
+            Tune currentSelectedTune = tunesList.get(selectedTuneIndex);
+            currentSelectedTune.setSelected(false);
+            tunesList.set(selectedTuneIndex, currentSelectedTune);
+        }
 
         tune.setSelected(true);
         tunesList.set(index, tune);
@@ -48,34 +53,46 @@ public abstract class TuneHandler {
 
         activitySelectTuneBinding.setTunes(tunesList);
 
-        afterHandle();
+        afterHandle(selectedTuneIndex);
 
         Tune selectedTune = tunesList.get(index);
         Uri uri = Uri.parse(selectedTune.getDirectoryUri() + '/' + selectedTune.getId());
-        Ringtone ringtone = RingtoneManager.getRingtone(view.getContext(), uri);
+        ringtone = RingtoneManager.getRingtone(view.getContext(), uri);
         ringtone.play();
 
     }
 
-    public void openSelectCustomTuneActivity(View view) {
+    public void openSelectCustomTuneActivity(View view, Tune tune) {
         Context context =  view.getContext();
         Activity currentActivity = (Activity) context;
         Intent intent = new Intent(context, SelectCustomTuneActivity.class);
-//        intent.putExtra("alarmId", alarmId);
+        tune.setSelected(true);
+        intent.putExtra("tune", tune);
+        intent.putExtra("isCustom", tune.isCustom());
         currentActivity.startActivityForResult(intent, RequestCodes.SHOW_CUSTOM_TUNE_SELECT);
     }
 
-    public void onBack(Activity activity, List<Tune> tunes, String defaultTuneId) {
+    public void onBack(Activity activity, List<Tune> tunes, Tune currentTune) {
+        if(ringtone != null && ringtone.isPlaying())
+        ringtone.stop();
         Tune selectedTune = tunes
                 .stream()
                 .filter(tune -> tune.isSelected())
                 .findFirst()
                 .orElse(null);
         Intent intent = new Intent();
-        boolean wasTuneChanged = selectedTune.getId() != defaultTuneId;
+        if(selectedTune != null) {
+            boolean wasTuneChanged = selectedTune.getId() != currentTune.getId();
+            selectedTune.setCustom(false);
+            intent.putExtra("tune", selectedTune);
+            intent.putExtra("wasTuneChanged", wasTuneChanged);
 
-        intent.putExtra("tune", selectedTune);
-        intent.putExtra("wasTuneChanged", wasTuneChanged);
+        }
+        else {
+            intent.putExtra("tune", currentTune);
+            intent.putExtra("isCustom", true);
+            intent.putExtra("wasTuneChanged", true);
+        }
 
         activity.setResult(Activity.RESULT_OK, intent);
         activity.finish();
