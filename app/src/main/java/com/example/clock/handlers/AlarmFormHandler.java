@@ -25,18 +25,8 @@ import com.example.clock.utils.RequestCodes;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AlarmFormHandler {
+public abstract class AlarmFormHandler {
     ActivityAlarmFormBinding binding;
-
-    public boolean formWasTouched() {
-        return formWasTouched;
-    }
-
-    public void setFormWasTouched(boolean formWasTouched) {
-        this.formWasTouched = formWasTouched;
-    }
-
-    boolean formWasTouched;
 
     private int[] getRepetitionDaysFromCheckedItems(boolean[] checkedItems) {
         List<Integer> days = new ArrayList<>();
@@ -70,7 +60,7 @@ public class AlarmFormHandler {
                     Alarm alarm = binding.getAlarm();
                     alarm.setRepetitionDays(repetitionDays);
                     binding.setAlarm(alarm);
-                    setFormWasTouched(true);
+                    afterHandle();
                 })
                 .setMultiChoiceItems(items, checkedItems, (dialogInterface, which, checked) -> checkedItems[which] = checked)
         ;
@@ -96,7 +86,7 @@ public class AlarmFormHandler {
         Alarm alarm = binding.getAlarm();
         alarm.setShouldVibrate(!alarm.getShouldVibrate());
         binding.setAlarm(alarm);
-        setFormWasTouched(true);
+        afterHandle();
     }
 
     public void showTitleDialog(final View view) {
@@ -117,7 +107,7 @@ public class AlarmFormHandler {
                     String title = titleInput.getText().toString();
                     alarm.setTitle(title);
                     binding.setAlarm(alarm);
-                    setFormWasTouched(true);
+                    afterHandle();
                 }));
         AlertDialog dialog = builder.create();
 
@@ -129,5 +119,31 @@ public class AlarmFormHandler {
         }
     }
 
+    public void onBack(Context context, boolean wasChanged) {
+        Activity activity = (Activity) context;
+        if(wasChanged) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
+
+            builder
+                    .setTitle("Зберегти зміни")
+                    .setNegativeButton("ВІДХИЛИТИ", ((dialogInterface, i) -> {
+                        dialogInterface.dismiss();
+                        activity.finish();
+                    }))
+                    .setPositiveButton("ЗБЕРЕГТИ", ((dialogInterface, i) -> {
+                        onSaveAlarm();
+                    }));
+            AlertDialog dialog = builder.create();
+
+            dialog.setCanceledOnTouchOutside(true);
+            dialog.show();
+        }
+        else {
+            activity.finish();
+        }
+    }
+
+    public abstract void afterHandle();
+    public abstract void onSaveAlarm();
 }

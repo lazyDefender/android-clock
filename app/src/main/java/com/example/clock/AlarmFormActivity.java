@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.Ringtone;
@@ -34,7 +35,17 @@ public class AlarmFormActivity extends AppCompatActivity{
 
     ActivityAlarmFormBinding activityAlarmFormBinding;
     AlarmFormHandler alarmFormHandler;
-    boolean wasTuneChanged;
+    private boolean wasTuneChanged;
+
+    public boolean getFormWasTouched() {
+        return formWasTouched;
+    }
+
+    public void setFormWasTouched(boolean formWasTouched) {
+        this.formWasTouched = formWasTouched;
+    }
+
+    private boolean formWasTouched;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -48,13 +59,25 @@ public class AlarmFormActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        AlarmFormActivity activity = this;
         activityAlarmFormBinding = DataBindingUtil.setContentView(this, R.layout.activity_alarm_form);
 
         setSupportActionBar(activityAlarmFormBinding.toolbar);
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
 
-        alarmFormHandler = new AlarmFormHandler();
+        alarmFormHandler = new AlarmFormHandler() {
+            @Override
+            public void afterHandle() {
+                setFormWasTouched(true);
+            }
+
+            @Override
+            public void onSaveAlarm() {
+                Alarm alarm = activity.activityAlarmFormBinding.getAlarm();
+                activity.onSaveAlarm(activity, alarm);
+            }
+        };
         activityAlarmFormBinding.setAlarmFormHandler(alarmFormHandler);
 
 
@@ -71,8 +94,25 @@ public class AlarmFormActivity extends AppCompatActivity{
             alarm.setHour(hour);
             alarm.setMin(min);
             activityAlarmFormBinding.setAlarm(alarm);
+
+            setFormWasTouched(true);
         });
 
+    }
+
+    private void onSaveAlarm(Context context, Alarm alarm) {
+        try {
+            AlarmManager manager = (AlarmManager) getSystemService(Service.ALARM_SERVICE);
+            List<Integer> alarmManagerTaskIds = AlarmRepo.launchAlarm(context, alarm, manager);
+            alarm.setAlarmManagerTaskIds(alarmManagerTaskIds);
+            AlarmRepo.save(context, alarm);
+            AlarmRepo.setNewAlarm(alarm);
+            finish();
+        } catch (JsonProcessingException | ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -91,27 +131,22 @@ public class AlarmFormActivity extends AppCompatActivity{
     }
 
     @Override
+    public void onBackPressed() {
+        boolean wasChanged = formWasTouched || wasTuneChanged;
+        alarmFormHandler.onBack(this, wasChanged);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         switch(id) {
             case android.R.id.home:
-
-                Toast.makeText(this, "sure?", Toast.LENGTH_LONG).show();
+                boolean wasChanged = formWasTouched || wasTuneChanged;
+                alarmFormHandler.onBack(this, wasChanged);
                 return false;
             case R.id.save_alarm:
-                try {
-                    Alarm alarm = activityAlarmFormBinding.getAlarm();
-                    AlarmManager manager = (AlarmManager) getSystemService(Service.ALARM_SERVICE);
-                    List<Integer> alarmManagerTaskIds = AlarmRepo.launchAlarm(this, alarm, manager);
-                    alarm.setAlarmManagerTaskIds(alarmManagerTaskIds);
-                    AlarmRepo.save(this, alarm);
-                    AlarmRepo.setNewAlarm(alarm);
-                    finish();
-                } catch (JsonProcessingException | ClassNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                Alarm alarm = activityAlarmFormBinding.getAlarm();
+                onSaveAlarm(this, alarm);
             default:
                 break;
         }
