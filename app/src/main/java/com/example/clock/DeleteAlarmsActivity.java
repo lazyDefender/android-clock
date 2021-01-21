@@ -1,7 +1,9 @@
 package com.example.clock;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Service;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.clock.adapters.DeleteAlarmsListAdapter;
@@ -16,11 +18,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DeleteAlarmsActivity extends AppCompatActivity {
@@ -45,6 +49,9 @@ public class DeleteAlarmsActivity extends AppCompatActivity {
                 AlarmManager manager = (AlarmManager) getSystemService(Service.ALARM_SERVICE);
                 try {
                     handler.onSubmit(this, adapter, manager);
+                    Intent intent = new Intent();
+                    intent.putIntegerArrayListExtra("deletedIds", (ArrayList<Integer>) adapter.getDeletedIds());
+                    this.setResult(Activity.RESULT_OK, intent);
                     finish();
                 } catch (IOException e) {
                     e.printStackTrace();

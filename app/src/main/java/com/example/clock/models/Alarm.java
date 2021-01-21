@@ -36,6 +36,10 @@ public class Alarm {
         setAlarmManagerTaskIds(new ArrayList<>());
     }
 
+    public Alarm(int id) {
+        setId(id);
+    }
+
     public Alarm(String title) {
         setTitle(title);
     }
@@ -110,6 +114,13 @@ public class Alarm {
 
     public void setAlarmManagerTaskIds(List<Integer> alarmManagerTaskIds) {
         this.alarmManagerTaskIds = alarmManagerTaskIds;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        return (object instanceof Alarm)
+                ? id == ((Alarm) object).id //change ".equals" to "=" if you use int instead of Integer, which I believe you apparently do.
+                : (object == this);
     }
 
 

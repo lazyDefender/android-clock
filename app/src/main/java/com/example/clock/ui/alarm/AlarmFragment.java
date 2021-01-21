@@ -1,5 +1,7 @@
 package com.example.clock.ui.alarm;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,7 @@ import com.example.clock.adapters.AlarmsListAdapter;
 import com.example.clock.databinding.FragmentAlarmBinding;
 import com.example.clock.handlers.AlarmHandler;
 import com.example.clock.models.Alarm;
+import com.example.clock.utils.RequestCodes;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -58,13 +61,29 @@ public class AlarmFragment extends Fragment {
             e.printStackTrace();
         }
         finally {
-            adapter = new AlarmsListAdapter(alarms);
+            adapter = new AlarmsListAdapter(alarms, this);
             binding.recyclerView.setAdapter(adapter);
         }
 
         handler = new AlarmHandler();
         binding.setAlarmHandler(handler);
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if(requestCode == RequestCodes.SHOW_ALARM_DELETE) {
+            if(resultCode == Activity.RESULT_OK) {
+                Bundle extras = intent.getExtras();
+                List<Integer> deletedIds = extras.getIntegerArrayList("deletedIds");
+                for(int id : deletedIds) {
+                    int index = alarms.indexOf(new Alarm(id));
+                    alarms.remove(index);
+                    adapter.notifyItemRemoved(index);
+                }
+            }
+        }
     }
 
     @Override

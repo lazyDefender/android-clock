@@ -1,5 +1,6 @@
 package com.example.clock.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -7,19 +8,23 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.clock.DeleteAlarmsActivity;
 import com.example.clock.databinding.AlarmsListItemBinding;
 import com.example.clock.models.Alarm;
+import com.example.clock.utils.RequestCodes;
 
 import java.util.List;
 
 public class AlarmsListAdapter extends RecyclerView.Adapter<AlarmsListAdapter.AlarmViewHolder> {
     private List<Alarm> alarmsList;
+    private Fragment fragment;
 
-    public AlarmsListAdapter(List<Alarm> alarmsList) {
+    public AlarmsListAdapter(List<Alarm> alarmsList, Fragment fragment) {
         this.alarmsList = alarmsList;
+        this.fragment = fragment;
     }
 
     @NonNull
@@ -60,10 +65,9 @@ public class AlarmsListAdapter extends RecyclerView.Adapter<AlarmsListAdapter.Al
                 @Override
                 public boolean onLongClick(View view) {
                     Context context = view.getContext();
-
+                    Activity activity = (Activity) context;
                     Intent intent = new Intent(context, DeleteAlarmsActivity.class);
-                    context.startActivity(intent);
-
+                    fragment.startActivityForResult(intent, RequestCodes.SHOW_ALARM_DELETE);
                     return true;
                 }
             });
