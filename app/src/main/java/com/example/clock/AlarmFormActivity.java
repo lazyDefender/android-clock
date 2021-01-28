@@ -25,6 +25,8 @@ import com.example.clock.handlers.AlarmFormHandler;
 import com.example.clock.models.Alarm;
 import com.example.clock.models.Tune;
 import com.example.clock.repos.AlarmRepo;
+import com.example.clock.utils.AlarmActions;
+import com.example.clock.utils.RandomID;
 import com.example.clock.utils.RequestCodes;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -36,6 +38,17 @@ public class AlarmFormActivity extends AppCompatActivity{
     ActivityAlarmFormBinding activityAlarmFormBinding;
     AlarmFormHandler alarmFormHandler;
     private boolean wasTuneChanged;
+    private boolean formWasTouched;
+    private int action;
+    private AlarmManager manager;
+
+    public int getAction() {
+        return action;
+    }
+
+    public void setAction(int action) {
+        this.action = action;
+    }
 
     public boolean getFormWasTouched() {
         return formWasTouched;
@@ -45,7 +58,7 @@ public class AlarmFormActivity extends AppCompatActivity{
         this.formWasTouched = formWasTouched;
     }
 
-    private boolean formWasTouched;
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -65,6 +78,12 @@ public class AlarmFormActivity extends AppCompatActivity{
         setSupportActionBar(activityAlarmFormBinding.toolbar);
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
+
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        setAction(extras.getInt("action"));
+
+
 
         alarmFormHandler = new AlarmFormHandler() {
             @Override
@@ -87,7 +106,23 @@ public class AlarmFormActivity extends AppCompatActivity{
         String title = ringtone.getTitle(this);
         Alarm defaultAlarm = new Alarm();
         defaultAlarm.setTune(new Tune(title, alarmToneUri.toString()));
+        if(action == AlarmActions.UPDATE) {
+            int alarmId = extras.getInt("alarmId");
+            try {
+                defaultAlarm = AlarmRepo.findById(this, alarmId);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
         activityAlarmFormBinding.setAlarm(defaultAlarm);
+
+        if(action == AlarmActions.UPDATE) {
+            activityAlarmFormBinding.timepicker.setHour(defaultAlarm.getHour());
+            activityAlarmFormBinding.timepicker.setMinute(defaultAlarm.getMin());
+        }
 
         activityAlarmFormBinding.timepicker.setOnTimeChangedListener((timePicker, hour, min) -> {
             Alarm alarm = activityAlarmFormBinding.getAlarm();
@@ -98,16 +133,15 @@ public class AlarmFormActivity extends AppCompatActivity{
             setFormWasTouched(true);
         });
 
+        manager = (AlarmManager) getSystemService(Service.ALARM_SERVICE);
     }
 
     private void onSaveAlarm(Context context, Alarm alarm) {
         try {
-            AlarmManager manager = (AlarmManager) getSystemService(Service.ALARM_SERVICE);
             List<Integer> alarmManagerTaskIds = AlarmRepo.launchAlarm(context, alarm, manager);
             alarm.setAlarmManagerTaskIds(alarmManagerTaskIds);
             AlarmRepo.save(context, alarm);
             AlarmRepo.setNewAlarm(alarm);
-            finish();
         } catch (JsonProcessingException | ClassNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -146,7 +180,22 @@ public class AlarmFormActivity extends AppCompatActivity{
                 return false;
             case R.id.save_alarm:
                 Alarm alarm = activityAlarmFormBinding.getAlarm();
+                if(action == AlarmActions.UPDATE) {
+
+                    AlarmRepo.cancelAlarm(this, alarm, manager);
+                    try {
+                        int oldAlarmId = alarm.getId();
+                        AlarmRepo.delete(this, oldAlarmId);
+                        AlarmRepo.setDeletedDuringUpdateId(oldAlarmId);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+                alarm.setId(RandomID.generate());
                 onSaveAlarm(this, alarm);
+                finish();
             default:
                 break;
         }

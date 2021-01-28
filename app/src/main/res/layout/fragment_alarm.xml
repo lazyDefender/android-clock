@@ -2,8 +2,8 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
         <variable
-            name="alarmHandler"
-            type="com.example.clock.handlers.AlarmHandler"/>
+            name="alarmFragmentHandler"
+            type="com.example.clock.handlers.AlarmFragmentHandler"/>
     </data>
     <RelativeLayout
         android:layout_width="match_parent"
@@ -56,7 +56,7 @@
             android:backgroundTint="#ffffff"
             android:layout_alignParentBottom="true"
             android:layout_centerInParent="true"
-            android:onClick="@{alarmHandler::onAdd}"
+            android:onClick="@{alarmFragmentHandler::onAdd}"
             />
     </RelativeLayout>
 </layout>

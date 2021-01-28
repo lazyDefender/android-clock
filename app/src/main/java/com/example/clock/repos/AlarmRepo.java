@@ -24,6 +24,15 @@ public class AlarmRepo {
     private static String filename = "alarms";
 
     private static Alarm newAlarm = null;
+    private static int deletedDuringUpdateId;
+
+    public static int getDeletedDuringUpdateId() {
+        return deletedDuringUpdateId;
+    }
+
+    public static void setDeletedDuringUpdateId(int deletedDuringUpdateId) {
+        AlarmRepo.deletedDuringUpdateId = deletedDuringUpdateId;
+    }
 
     public static Alarm getNewAlarm() {
         return newAlarm;
@@ -111,6 +120,15 @@ public class AlarmRepo {
         }
         while(i < days.length);
         return alarmManagerTaskIds;
+    }
+
+    public static void cancelAlarm(Context context, Alarm alarm, AlarmManager manager) {
+        if (alarm != null) {
+            for (int taskId : alarm.getAlarmManagerTaskIds()) {
+                PendingIntent pendingIntent = AlarmRepo.createAlarmPendingIntent(context, alarm, taskId);
+                manager.cancel(pendingIntent);
+            }
+        }
     }
 
     public static List<Alarm> findAll(Context context) throws IOException, ClassNotFoundException {

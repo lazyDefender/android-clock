@@ -13,10 +13,10 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.clock.handlers.AlarmFragmentHandler;
 import com.example.clock.repos.AlarmRepo;
 import com.example.clock.adapters.AlarmsListAdapter;
 import com.example.clock.databinding.FragmentAlarmBinding;
-import com.example.clock.handlers.AlarmHandler;
 import com.example.clock.models.Alarm;
 import com.example.clock.utils.RequestCodes;
 
@@ -29,7 +29,7 @@ public class AlarmFragment extends Fragment {
     private AlarmViewModel alarmViewModel;
     private FragmentAlarmBinding binding;
     private AlarmsListAdapter adapter;
-    private AlarmHandler handler;
+    private AlarmFragmentHandler handler;
     private List<Alarm> alarms;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -65,8 +65,8 @@ public class AlarmFragment extends Fragment {
             binding.recyclerView.setAdapter(adapter);
         }
 
-        handler = new AlarmHandler();
-        binding.setAlarmHandler(handler);
+        handler = new AlarmFragmentHandler();
+        binding.setAlarmFragmentHandler(handler);
 
     }
 
@@ -90,6 +90,13 @@ public class AlarmFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Alarm newAlarm = AlarmRepo.getNewAlarm();
+        int deletedDuringUpdateId = AlarmRepo.getDeletedDuringUpdateId();
+        if(deletedDuringUpdateId > 0) {
+            int index = alarms.indexOf(new Alarm(deletedDuringUpdateId));
+            alarms.remove(index);
+            adapter.notifyItemRemoved(index);
+            AlarmRepo.setDeletedDuringUpdateId(0);
+        }
         if(newAlarm != null) {
             alarms.add(newAlarm);
             adapter.notifyItemInserted(alarms.size() - 1);

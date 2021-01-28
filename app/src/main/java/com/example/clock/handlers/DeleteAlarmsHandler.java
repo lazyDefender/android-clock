@@ -40,12 +40,7 @@ public class DeleteAlarmsHandler {
                 for (int id : deletedIds) {
                     Alarm alarm = AlarmRepo.findById(context, id);
 
-                    if (alarm != null) {
-                        for (int taskId : alarm.getAlarmManagerTaskIds()) {
-                            PendingIntent pendingIntent = AlarmRepo.createAlarmPendingIntent(context, alarm, taskId);
-                            manager.cancel(pendingIntent);
-                        }
-                    }
+                    AlarmRepo.cancelAlarm(context, alarm, manager);
                     AlarmRepo.delete(context, id);
                 }
             }

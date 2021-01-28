@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.clock.DeleteAlarmsActivity;
 import com.example.clock.databinding.AlarmsListItemBinding;
+import com.example.clock.handlers.AlarmsListItemHandler;
 import com.example.clock.models.Alarm;
 import com.example.clock.utils.RequestCodes;
 
@@ -21,6 +22,7 @@ import java.util.List;
 public class AlarmsListAdapter extends RecyclerView.Adapter<AlarmsListAdapter.AlarmViewHolder> {
     private List<Alarm> alarmsList;
     private Fragment fragment;
+    private AlarmsListItemHandler handler;
 
     public AlarmsListAdapter(List<Alarm> alarmsList, Fragment fragment) {
         this.alarmsList = alarmsList;
@@ -59,7 +61,9 @@ public class AlarmsListAdapter extends RecyclerView.Adapter<AlarmsListAdapter.Al
         }
 
         public void bind(Alarm alarm) {
+            handler = new AlarmsListItemHandler();
             binding.setAlarm(alarm);
+            binding.setHandler(handler );
             binding.executePendingBindings();
             binding.alarmListItemContainer.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
