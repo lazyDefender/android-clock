@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.widget.Toast;
 
 import com.example.clock.AlarmActivity;
 import com.example.clock.json.Json;
@@ -16,8 +17,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class AlarmRepo {
@@ -25,6 +30,15 @@ public class AlarmRepo {
 
     private static Alarm newAlarm = null;
     private static int deletedDuringUpdateId;
+    private static Alarm dismissedAlarm;
+
+    public static Alarm getDismissedAlarm() {
+        return dismissedAlarm;
+    }
+
+    public static void setDismissedAlarm(Alarm dismissedAlarm) {
+        AlarmRepo.dismissedAlarm = dismissedAlarm;
+    }
 
     public static int getDeletedDuringUpdateId() {
         return deletedDuringUpdateId;
@@ -89,6 +103,20 @@ public class AlarmRepo {
         return pendingIntent;
     }
 
+    public static Calendar getNext(Calendar calendar, int daysIncrement) {
+        Date now = new Date(System.currentTimeMillis());
+
+        Date dateSpecified = calendar.getTime();
+
+        if(dateSpecified.before(now)) {
+            // set to next week if should repeat
+            // otherwise set to next day
+            calendar.add(Calendar.DATE, daysIncrement);
+        }
+
+        return calendar;
+    }
+
     public static List<Integer> launchAlarm(Context context, Alarm alarm, AlarmManager manager) {
         int i = 0;
         int[] days = alarm.getRepetitionDays();
@@ -106,19 +134,21 @@ public class AlarmRepo {
             PendingIntent pendingIntent = createAlarmPendingIntent(context, alarm, alarmManagerTaskId);
 
             if(days.length > 0) {
-                calendar.set(Calendar.DAY_OF_WEEK, days[i] + 1);
-                manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 7, pendingIntent);
+                calendar.set(Calendar.DAY_OF_WEEK, days[i] + 2);
+                Calendar withNext = getNext(calendar, 7);
+                manager.setRepeating(AlarmManager.RTC_WAKEUP, withNext.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 7, pendingIntent);
             }
 
             else {
-                manager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                Calendar withNext = getNext(calendar, 1);
+                manager.set(AlarmManager.RTC_WAKEUP, withNext.getTimeInMillis(), pendingIntent);
             }
 
             alarmManagerTaskIds.add(alarmManagerTaskId);
-
             i++;
         }
         while(i < days.length);
+
         return alarmManagerTaskIds;
     }
 

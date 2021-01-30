@@ -102,5 +102,13 @@ public class AlarmFragment extends Fragment {
             adapter.notifyItemInserted(alarms.size() - 1);
             AlarmRepo.setNewAlarm(null);
         }
+
+        Alarm dismissedAlarm = AlarmRepo.getDismissedAlarm();
+        if(dismissedAlarm != null) {
+            int index = alarms.indexOf(dismissedAlarm);
+            alarms.set(index, dismissedAlarm);
+            adapter.notifyItemChanged(index);
+            AlarmRepo.setDismissedAlarm(null);
+        }
     }
 }
