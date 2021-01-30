@@ -3,6 +3,7 @@ package com.example.clock.handlers;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -19,13 +20,14 @@ import com.example.clock.databinding.ActivitySelectTuneBinding;
 import com.example.clock.models.Tune;
 import com.example.clock.utils.RequestCodes;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class TuneHandler {
     private ActivitySelectTuneBinding activitySelectTuneBinding;
     private int selectedTuneIndex;
-    Ringtone ringtone;
+    MediaPlayer player;
 
 
     public TuneHandler(ActivitySelectTuneBinding binding, int selectedTuneIndex) {
@@ -36,8 +38,13 @@ public abstract class TuneHandler {
     public abstract void afterHandle(int selectedTuneIndex);
 
     public void onSelect(View view, Tune tune) {
-        if(ringtone != null && ringtone.isPlaying())
-        ringtone.stop();
+        Context context = view.getContext();
+
+        if(player == null) player = new MediaPlayer();
+
+        if(player.isPlaying()) player.stop();
+        player.reset();
+
         List<Tune> tunesList = activitySelectTuneBinding.getTunes();
         int index = tunesList.indexOf(tune);
 
@@ -57,9 +64,16 @@ public abstract class TuneHandler {
 
         Tune selectedTune = tunesList.get(index);
         Uri uri = Uri.parse(selectedTune.getDirectoryUri() + '/' + selectedTune.getId());
-        ringtone = RingtoneManager.getRingtone(view.getContext(), uri);
-        ringtone.play();
-
+        try {
+            player.setDataSource(context, uri);
+            player.prepare();
+            player.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        catch(Exception e) {
+            new String();
+        }
     }
 
     public void openSelectCustomTuneActivity(View view, Tune tune) {
@@ -73,8 +87,8 @@ public abstract class TuneHandler {
     }
 
     public void onBack(Activity activity, List<Tune> tunes, Tune currentTune) {
-        if(ringtone != null && ringtone.isPlaying())
-        ringtone.stop();
+        if(player != null && player.isPlaying())
+        player.stop();
         Tune selectedTune = tunes
                 .stream()
                 .filter(tune -> tune.isSelected())
