@@ -1,8 +1,11 @@
 package com.example.clock.handlers;
 
 import android.app.Activity;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioFocusRequest;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -11,6 +14,7 @@ import android.view.View;
 
 import com.example.clock.databinding.ActivitySelectCustomTuneBinding;
 import com.example.clock.models.Tune;
+import com.example.clock.utils.AudioFocus;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -21,6 +25,8 @@ public abstract class CustomTuneHandler {
     int selectedTuneIndex;
     private ActivitySelectCustomTuneBinding binding;
     private MediaPlayer player;
+    AudioFocusRequest audioFocusRequest;
+    AudioManager audioManager;
 
     public CustomTuneHandler(ActivitySelectCustomTuneBinding binding, int i) {
         this.binding = binding;
@@ -29,6 +35,8 @@ public abstract class CustomTuneHandler {
 
     public void onSelect(View view, Tune tune) {
         Context context = view.getContext();
+        audioManager = (AudioManager) context.getSystemService(Service.AUDIO_SERVICE);
+
         if(player == null) player = new MediaPlayer();
         if(player.isPlaying()) player.stop();
         player.reset();
@@ -53,7 +61,11 @@ public abstract class CustomTuneHandler {
         try {
             player.setDataSource(context, uri);
             player.prepare();
-            player.start();
+            audioFocusRequest = AudioFocus.createRequest(audioManager, player);
+            int audioFocusResult = audioManager.requestAudioFocus(audioFocusRequest);
+            if (audioFocusResult == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                player.start();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -67,6 +79,9 @@ public abstract class CustomTuneHandler {
 
     public void onBack(Activity activity, List<Tune> tunes, String defaultTuneId) {
         if(player != null && player.isPlaying()) player.stop();
+        audioManager = (AudioManager) activity.getSystemService(Service.AUDIO_SERVICE);
+        audioManager.abandonAudioFocusRequest(audioFocusRequest);
+
         Tune selectedTune = tunes
                 .stream()
                 .filter(tune -> tune.isSelected())

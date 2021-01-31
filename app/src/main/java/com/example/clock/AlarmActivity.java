@@ -1,7 +1,10 @@
 package com.example.clock;
 
 import android.app.Activity;
+import android.app.Service;
 import android.content.Context;
+import android.media.AudioFocusRequest;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -14,6 +17,7 @@ import com.example.clock.handlers.AlarmHandler;
 import com.example.clock.models.Alarm;
 import com.example.clock.models.Tune;
 import com.example.clock.repos.AlarmRepo;
+import com.example.clock.utils.AudioFocus;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -30,6 +34,7 @@ public class AlarmActivity extends AppCompatActivity {
 
     ActivityAlarmBinding activityAlarmBinding;
     MediaPlayer player;
+    AudioFocusRequest audioFocusRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,12 +71,16 @@ public class AlarmActivity extends AppCompatActivity {
             Alarm alarm = AlarmRepo.findById(this, id);
             activityAlarmBinding.setAlarm(alarm);
 
+
+            setVolumeControlStream(AudioManager.STREAM_ALARM);
             player = new MediaPlayer();
             Activity activity = this;
+            AudioManager audioManager = (AudioManager) getSystemService(Service.AUDIO_SERVICE);
             AlarmHandler handler = new AlarmHandler() {
                 @Override
                 public void onStop() {
                     player.stop();
+                    audioManager.abandonAudioFocusRequest(audioFocusRequest);
                     activity.finish();
                     try {
                         if(alarm.getRepetitionDays().length == 0) {
@@ -104,7 +113,12 @@ public class AlarmActivity extends AppCompatActivity {
             player.setDataSource(this, Uri.parse(tuneUri));
             player.setLooping(true);
             player.prepare();
-            player.start();
+
+            audioFocusRequest = AudioFocus.createRequest(audioManager, player);
+            int audioFocusResult = audioManager.requestAudioFocus(audioFocusRequest);
+            if (audioFocusResult == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                player.start();
+            }
         }
         catch(Exception e) {
             new String();
