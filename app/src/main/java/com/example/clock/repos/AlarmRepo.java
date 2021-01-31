@@ -168,7 +168,6 @@ public class AlarmRepo {
         if(alarmsFile.exists()) {
             String json = readFile(fileFullPath);
             alarms = Json.parseJsonArray(json, Alarm.class);
-            if(alarms.size() > 4) {alarms.clear(); writeToFile("[]", fileFullPath);}
         }
         else {
             String json = "[]";
