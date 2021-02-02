@@ -25,16 +25,22 @@ import androidx.databinding.DataBindingUtil;
 
 import android.os.Handler;
 import android.os.PowerManager;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.view.View;
 import android.view.WindowManager;
 
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class AlarmActivity extends AppCompatActivity {
 
     ActivityAlarmBinding activityAlarmBinding;
     MediaPlayer player;
     AudioFocusRequest audioFocusRequest;
+    final Handler vibeHandler = new Handler();
+    Timer timer = new Timer(false);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +86,7 @@ public class AlarmActivity extends AppCompatActivity {
                 @Override
                 public void onStop() {
                     player.stop();
+                    timer.cancel();
                     audioManager.abandonAudioFocusRequest(audioFocusRequest);
                     activity.finish();
                     try {
@@ -119,7 +126,23 @@ public class AlarmActivity extends AppCompatActivity {
             if (audioFocusResult == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
                 player.start();
             }
-        }
+
+            if(alarm.getShouldVibrate()) {
+                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                TimerTask timerTask = new TimerTask() {
+                    @Override
+                    public void run() {
+                        vibeHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+                            }
+                        });
+                    }
+                };
+                timer.scheduleAtFixedRate(timerTask, 0, 1000);
+            }
+       }
         catch(Exception e) {
             new String();
         }
