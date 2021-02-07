@@ -1,40 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
-    <LinearLayout android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        xmlns:tools="http://schemas.android.com/tools"
-        tools:context=".ui.alarm.AlarmFragment"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        xmlns:android="http://schemas.android.com/apk/res/android">
-        <androidx.core.widget.NestedScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="alarmFragmentHandler"
+            type="com.example.clock.handlers.AlarmFragmentHandler"/>
+    </data>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout android:layout_width="match_parent"
+            android:layout_height="match_parent"
             xmlns:tools="http://schemas.android.com/tools"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:scrollbars="none">
+            tools:context=".ui.alarm.AlarmFragment"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            xmlns:android="http://schemas.android.com/apk/res/android">
+            <androidx.core.widget.NestedScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:scrollbars="none">
 
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:context=".ui.alarm.AlarmFragment"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                >
-
-                <com.example.clock.ui.ClockView
-                    android:layout_width="400dp"
-                    android:layout_height="400dp" />
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recycler_view"
+                    android:layout_height="match_parent"
+                    tools:context=".ui.alarm.AlarmFragment"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    >
+
+                    <com.example.clock.ui.ClockView
+                        android:layout_width="400dp"
+                        android:layout_height="400dp" />
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                </RelativeLayout>
-            </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
-    </LinearLayout>
+                        android:layout_height="wrap_content">
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recycler_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+            </androidx.core.widget.NestedScrollView>
+        </LinearLayout>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:src="@drawable/ic_plus"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="#ffffff"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
+            android:onClick="@{alarmFragmentHandler::onAdd}"
+            />
+    </RelativeLayout>
 </layout>

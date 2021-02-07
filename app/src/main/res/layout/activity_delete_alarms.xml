@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="adapter"
+            type="com.example.clock.adapters.DeleteAlarmsListAdapter" />
+        <variable
+            name="deleteAlarmsHandler"
+            type="com.example.clock.handlers.DeleteAlarmsHandler" />
+    </data>
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".DeleteAlarmsActivity"
+        android:orientation="vertical">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/AlarmFormTheme"
+            app:title="@string/delete_alarms"
+            app:titleTextColor="#FFFFFF"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/delete_alarms_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:adapter="@{adapter}"/>
+        </RelativeLayout>
+
+
+    </LinearLayout>
+</layout>

@@ -1,0 +1,149 @@
+package com.example.clock.handlers;
+
+import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Service;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import androidx.databinding.DataBindingUtil;
+
+import com.example.clock.SelectTuneActivity;
+import com.example.clock.databinding.ActivityAlarmFormBinding;
+import com.example.clock.models.Alarm;
+import com.example.clock.models.Tune;
+import com.example.clock.utils.RequestCodes;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class AlarmFormHandler {
+    ActivityAlarmFormBinding binding;
+
+    private int[] getRepetitionDaysFromCheckedItems(boolean[] checkedItems) {
+        List<Integer> days = new ArrayList<>();
+        for(int j=0;j<checkedItems.length;j++) {
+            if(checkedItems[j]) days.add(j);
+        }
+        int[] repetitionDays = new int[days.size()];
+        for(int j=0;j<days.size();j++) {
+            repetitionDays[j] = days.get(j);
+        }
+        return repetitionDays;
+    }
+
+    public void showRepeatDialog(final View view) {
+        binding = DataBindingUtil.findBinding(view);
+
+        String[] items = {"Понеділок", "Вівторок", "Середа", "Четвер", "П\'ятниця", "Субота", "Неділя"};
+        int[] selectedRepetitionDays = binding.getAlarm().getRepetitionDays();
+
+        final boolean[] checkedItems = {false, false, false, false, false, false, false };
+        for(int d : selectedRepetitionDays) {
+            checkedItems[d] = true;
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+        builder
+                .setTitle("Повторювати")
+                .setNegativeButton("СКАСУВАТИ", ((dialogInterface, i) -> dialogInterface.dismiss()))
+                .setPositiveButton("ОК", (dialogInterface, i) -> {
+                    int[] repetitionDays = getRepetitionDaysFromCheckedItems(checkedItems);
+                    Alarm alarm = binding.getAlarm();
+                    alarm.setRepetitionDays(repetitionDays);
+                    binding.setAlarm(alarm);
+                    afterHandle();
+                })
+                .setMultiChoiceItems(items, checkedItems, (dialogInterface, which, checked) -> checkedItems[which] = checked)
+        ;
+        builder.show();
+    }
+
+    public void requestStoragePermissions(View view) {
+        Context context = view.getContext();
+        Activity activity = (Activity) context;
+        activity.requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, RequestCodes.READ_EXTERNAL_STORAGE_PERMISSION);
+    }
+
+    public void showSignalSelect(Context context, Tune tune) {
+        Activity currentActivity = (Activity) context;
+        Intent intent = new Intent(context, SelectTuneActivity.class);
+        intent.putExtra("tune", tune);
+        intent.putExtra("isCustom", tune.isCustom());
+        currentActivity.startActivityForResult(intent, RequestCodes.SHOW_TUNE_SELECT);
+    }
+
+    public void handleShouldVibrateChange(final View view) {
+        binding = DataBindingUtil.findBinding(view);
+        Alarm alarm = binding.getAlarm();
+        alarm.setShouldVibrate(!alarm.getShouldVibrate());
+        binding.setAlarm(alarm);
+        afterHandle();
+    }
+
+    public void showTitleDialog(final View view) {
+        binding = DataBindingUtil.findBinding(view);
+        Context context = view.getContext();
+        Alarm alarm = binding.getAlarm();
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        final EditText titleInput = new EditText(context);
+        titleInput.setText(alarm.getTitle());
+
+        builder
+                .setView(titleInput)
+                .setTitle("Мітка")
+                .setNegativeButton("СКАСУВАТИ", ((dialogInterface, i) -> {
+                    dialogInterface.dismiss();
+                }))
+                .setPositiveButton("ОК", ((dialogInterface, i) -> {
+                    String title = titleInput.getText().toString();
+                    alarm.setTitle(title);
+                    binding.setAlarm(alarm);
+                    afterHandle();
+                }));
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
+
+        // показати клавіатуру
+        if(titleInput.requestFocus()) {
+            dialog.getWindow().setSoftInputMode (WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
+    }
+
+    public void onBack(Context context, boolean wasChanged) {
+        Activity activity = (Activity) context;
+        if(wasChanged) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+
+            builder
+                    .setTitle("Зберегти зміни")
+                    .setNegativeButton("ВІДХИЛИТИ", ((dialogInterface, i) -> {
+                        dialogInterface.dismiss();
+                        activity.finish();
+                    }))
+                    .setPositiveButton("ЗБЕРЕГТИ", ((dialogInterface, i) -> {
+                        onSaveAlarm();
+                    }));
+            AlertDialog dialog = builder.create();
+
+            dialog.setCanceledOnTouchOutside(true);
+            dialog.show();
+        }
+        else {
+            activity.finish();
+        }
+    }
+
+    public abstract void afterHandle();
+    public abstract void onSaveAlarm();
+}

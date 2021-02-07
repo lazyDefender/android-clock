@@ -4,4 +4,17 @@
     <string name="title_time">Світовий час</string>
     <string name="title_stopwatch">Секундомір</string>
     <string name="title_timer">Таймер</string>
+    <string name="add_alarm">Додати сигнал</string>
+    <string name="select_alarm_sound">Вибір сигналу дзвінка</string>
+    <string name="title_activity_delete_alarms">DeleteAlarmsActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="title_activity_alarm">AlarmActivity</string>
+    <string name="delete_alarms">Видалити сигнали</string>
 </resources>

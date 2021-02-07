@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <data>
+        <import type="com.example.clock.utils.AlarmFormUtils"/>
+        <variable
+            name="alarm"
+            type="com.example.clock.models.Alarm"/>
+        <variable
+            name="handler"
+            type="com.example.clock.handlers.AlarmsListItemHandler" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/alarm_list_item_container"
+        xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
@@ -8,32 +19,36 @@
         android:foreground="?android:attr/selectableItemBackground"
         android:minHeight="72dp"
         android:paddingTop="8dp"
-        android:paddingBottom="8dp">
+        android:paddingBottom="8dp"
+        android:clickable="true"
+        android:onClick="@{(view) -> handler.onShowForm(view, alarm)}"
+        >
 
         <TextView
-            android:id="@+id/textViewName"
+            android:id="@+id/alarm_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
-            app:layout_constraintBottom_toTopOf="@+id/textViewMedicine"
+            app:layout_constraintBottom_toTopOf="@+id/alarm_title_and_days"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:text="11:20" />
+            android:text="@{alarm.hour + `:` + alarm.min}"
+            tools:text="Title"/>
 
         <TextView
-            android:id="@+id/textViewMedicine"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/textViewName"
-            app:layout_constraintTop_toBottomOf="@+id/textViewName"
-            android:text="Писати код, щодня" />
+        android:id="@+id/alarm_title_and_days"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/alarm_time"
+        app:layout_constraintTop_toBottomOf="@+id/alarm_time"
+        android:text="@{alarm.title + `, ` + AlarmFormUtils.getRepetitionDays(alarm.repetitionDays)}" />
 
-        <Switch
-            android:id="@+id/checkBoxAdministered"
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/alarm_active_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -41,7 +56,10 @@
             app:layout_constraintHorizontal_bias="1"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:checked="@{alarm.active}"
+            android:onClick="@{(view) -> handler.onActiveChange(view, alarm)}"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
