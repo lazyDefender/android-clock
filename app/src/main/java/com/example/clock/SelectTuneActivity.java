@@ -126,11 +126,15 @@ public class SelectTuneActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, intent);
         if(requestCode == RequestCodes.SHOW_CUSTOM_TUNE_SELECT && resultCode == Activity.RESULT_OK) {
             Bundle extras = intent.getExtras();
-            Tune tune = (Tune) extras.get("tune");
+            Object tuneObject = extras.get("tune");
+            Tune tune = tuneObject != null ?
+                    (Tune) tuneObject :
+                    null;
             boolean isCustom = extras.getBoolean("isCustom");
-            tune.setCustom(isCustom);
+
             boolean wasTuneChanged = extras.getBoolean("wasTuneChanged");
             if(wasTuneChanged) {
+                tune.setCustom(isCustom);
                 if(selectedTuneIndex > -1) {
                     Tune prevSelected = tunesList.get(selectedTuneIndex);
                     prevSelected.setSelected(false);

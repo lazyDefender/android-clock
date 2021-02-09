@@ -91,7 +91,7 @@ public class AlarmFragment extends Fragment {
         super.onResume();
         Alarm newAlarm = AlarmRepo.getNewAlarm();
         int deletedDuringUpdateId = AlarmRepo.getDeletedDuringUpdateId();
-        if(deletedDuringUpdateId > 0) {
+        if(deletedDuringUpdateId != 0) {
             int index = alarms.indexOf(new Alarm(deletedDuringUpdateId));
             alarms.remove(index);
             adapter.notifyItemRemoved(index);

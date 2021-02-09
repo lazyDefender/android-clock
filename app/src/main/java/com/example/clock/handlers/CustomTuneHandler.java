@@ -80,7 +80,7 @@ public abstract class CustomTuneHandler {
     public void onBack(Activity activity, List<Tune> tunes, String defaultTuneId) {
         if(player != null && player.isPlaying()) player.stop();
         audioManager = (AudioManager) activity.getSystemService(Service.AUDIO_SERVICE);
-        audioManager.abandonAudioFocusRequest(audioFocusRequest);
+        if(audioFocusRequest != null) audioManager.abandonAudioFocusRequest(audioFocusRequest);
 
         Tune selectedTune = tunes
                 .stream()
