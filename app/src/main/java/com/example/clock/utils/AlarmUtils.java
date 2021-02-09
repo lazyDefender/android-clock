@@ -1,6 +1,6 @@
 package com.example.clock.utils;
 
-public class AlarmFormUtils {
+public class AlarmUtils {
     public static String getRepetitionDays(int[] days) {
         String[] dayNames = {
                 "пн",
@@ -31,5 +31,19 @@ public class AlarmFormUtils {
         if(closingParenthesisIndex < 0) closingParenthesisIndex = input.length();
         String result = input.substring(openingParenthesisIndex + 1, closingParenthesisIndex);
         return result;
+    }
+
+    private static String format(int input) {
+        String str = input > 9 ?
+                String.valueOf(input) :
+                "0" + String.valueOf(input);
+
+        return str;
+    }
+    public static String formatTime(int hour, int minute) {
+        String hourStr = format(hour);
+        String minStr = format(minute);
+
+        return hourStr + ":" + minStr;
     }
 }

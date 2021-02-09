@@ -87,6 +87,8 @@ public abstract class TuneHandler {
     }
 
     public void openSelectCustomTuneActivity(View view, Tune tune) {
+        if(player != null && player.isPlaying()) player.stop();
+        player.reset();
         Context context =  view.getContext();
         Activity currentActivity = (Activity) context;
         Intent intent = new Intent(context, SelectCustomTuneActivity.class);

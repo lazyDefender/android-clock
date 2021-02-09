@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
     <data>
-        <import type="com.example.clock.utils.AlarmFormUtils"/>
-        <import type="com.example.clock.utils.AlarmListItemUtils"/>
+        <import type="com.example.clock.utils.AlarmUtils"/>
         <variable
             name="alarm"
             type="com.example.clock.models.Alarm"/>
@@ -35,7 +34,7 @@
             app:layout_constraintBottom_toTopOf="@+id/alarm_title_and_days"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:text="@{AlarmListItemUtils.formatTime(alarm.hour, alarm.min)}"
+            android:text="@{AlarmUtils.formatTime(alarm.hour, alarm.min)}"
             tools:text="Title"/>
 
         <TextView
@@ -46,7 +45,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="@+id/alarm_time"
         app:layout_constraintTop_toBottomOf="@+id/alarm_time"
-        android:text="@{alarm.title + `, ` + AlarmFormUtils.getRepetitionDays(alarm.repetitionDays)}" />
+        android:text="@{alarm.title + `, ` + AlarmUtils.getRepetitionDays(alarm.repetitionDays)}" />
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/alarm_active_switch"

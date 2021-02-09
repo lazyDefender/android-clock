@@ -100,7 +100,6 @@ public abstract class CustomTuneHandler {
             intent.putExtra("wasTuneChanged", false);
         }
 
-
         activity.setResult(Activity.RESULT_OK, intent);
         activity.finish();
     }
