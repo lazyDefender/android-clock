@@ -36,9 +36,7 @@ public class MainActivity extends AppCompatActivity {
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_alarm,
-                R.id.navigation_time,
-                R.id.navigation_stopwatch,
-                R.id.navigation_timer
+                R.id.navigation_time
         ).build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);

@@ -177,7 +177,7 @@ public class AlarmFormActivity extends AppCompatActivity{
             case android.R.id.home:
                 boolean wasChanged = formWasTouched || wasTuneChanged;
                 alarmFormHandler.onBack(this, wasChanged);
-                return false;
+                return true;
             case R.id.save_alarm:
                 Alarm alarm = activityAlarmFormBinding.getAlarm();
                 if(action == AlarmActions.UPDATE) {
