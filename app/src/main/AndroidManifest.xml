@@ -20,26 +20,33 @@
         <activity
             android:name=".SelectCustomTuneActivity"
             android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation = "portrait"
             ></activity>
         <activity
             android:name=".AlarmActivity"
             android:label="@string/title_activity_alarm"
             android:showOnLockScreen="true"
             android:theme="@style/AppTheme.NoActionBar"
-            android:turnScreenOn="true" />
+            android:turnScreenOn="true"
+            android:screenOrientation = "portrait"/>
         <activity
             android:name=".DeleteAlarmsActivity"
             android:label="@string/title_activity_delete_alarms"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation = "portrait"/>
         <activity
             android:name=".SelectTuneActivity"
             android:parentActivityName=".AlarmFormActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:screenOrientation = "portrait"/>
         <activity
             android:name=".AlarmFormActivity"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".MainActivity">
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:screenOrientation = "portrait"/>
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation = "portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

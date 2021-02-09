@@ -1,8 +1,13 @@
 package com.example.clock;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
+import android.content.Intent;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -17,10 +22,13 @@ import com.example.clock.handlers.AlarmHandler;
 import com.example.clock.models.Alarm;
 import com.example.clock.models.Tune;
 import com.example.clock.repos.AlarmRepo;
+import com.example.clock.utils.AlarmUtils;
 import com.example.clock.utils.AudioFocus;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.databinding.DataBindingUtil;
 
 import android.os.Handler;
@@ -39,6 +47,7 @@ public class AlarmActivity extends AppCompatActivity {
     ActivityAlarmBinding activityAlarmBinding;
     MediaPlayer player;
     AudioFocusRequest audioFocusRequest;
+    AudioManager audioManager;
     final Handler vibeHandler = new Handler();
     Timer timer = new Timer(false);
 
@@ -81,26 +90,11 @@ public class AlarmActivity extends AppCompatActivity {
             setVolumeControlStream(AudioManager.STREAM_ALARM);
             player = new MediaPlayer();
             Activity activity = this;
-            AudioManager audioManager = (AudioManager) getSystemService(Service.AUDIO_SERVICE);
+            audioManager = (AudioManager) getSystemService(Service.AUDIO_SERVICE);
             AlarmHandler handler = new AlarmHandler() {
                 @Override
                 public void onStop() {
-                    player.stop();
-                    timer.cancel();
-                    audioManager.abandonAudioFocusRequest(audioFocusRequest);
-                    activity.finish();
-                    try {
-                        if(alarm.getRepetitionDays().length == 0) {
-                            AlarmRepo.delete(activity, id);
-                            alarm.setActive(false);
-                            AlarmRepo.save(activity, alarm);
-                            AlarmRepo.setDismissedAlarm(alarm);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
+                    onAlarmStop(alarm);
                 }
             };
             activityAlarmBinding.setHandler(handler);
@@ -129,22 +123,82 @@ public class AlarmActivity extends AppCompatActivity {
 
             if(alarm.getShouldVibrate()) {
                 Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                TimerTask timerTask = new TimerTask() {
+                TimerTask vibratorTimerTask = new TimerTask() {
                     @Override
                     public void run() {
-                        vibeHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-                            }
+                        vibeHandler.post(() -> {
+                            v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
                         });
                     }
                 };
-                timer.scheduleAtFixedRate(timerTask, 0, 1000);
+                timer.scheduleAtFixedRate(vibratorTimerTask, 0, 1000);
             }
+
+            Handler alarmStopHandler = new Handler();
+
+            alarmStopHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    NotificationManager notificationManager;
+
+                    NotificationCompat.Builder builder =
+                            new NotificationCompat.Builder(activity.getApplicationContext(), "notify_001");
+                    Intent intent = new Intent(activity.getApplicationContext(), MainActivity.class);
+                    PendingIntent pendingIntent = PendingIntent.getActivity(activity, 0, intent, 0);
+
+                    NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
+                    bigText.bigText(AlarmUtils.formatTime(alarm.getHour(), alarm.getMin()));
+                    bigText.setBigContentTitle(alarm.getTitle());
+                    bigText.setSummaryText("Сигнал");
+
+                    builder.setContentIntent(pendingIntent);
+                    builder.setSmallIcon(R.drawable.ic_alarm);
+                    builder.setStyle(bigText);
+
+                    notificationManager =
+                            (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                    {
+                        String channelId = "Your_channel_id";
+                        NotificationChannel channel = new NotificationChannel(
+                                channelId,
+                                "Channel human readable title",
+                                NotificationManager.IMPORTANCE_HIGH);
+                        notificationManager.createNotificationChannel(channel);
+                        builder.setChannelId(channelId);
+                    }
+
+                    notificationManager.notify(0, builder.build());
+
+                    onAlarmStop(alarm);
+                }
+            }, 40 * 1000);
+
+
+
        }
         catch(Exception e) {
             new String();
+        }
+    }
+
+    private void onAlarmStop(Alarm alarm) {
+        player.stop();
+        timer.cancel();
+        audioManager.abandonAudioFocusRequest(audioFocusRequest);
+        finish();
+        try {
+            if(alarm.getRepetitionDays().length == 0) {
+                AlarmRepo.delete(this, alarm.getId());
+                alarm.setActive(false);
+                AlarmRepo.save(this, alarm);
+                AlarmRepo.setDismissedAlarm(alarm);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
 }
