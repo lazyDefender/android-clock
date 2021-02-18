@@ -1,4 +1,4 @@
-package com.example.clock.ui;
+package com.example.clock.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -15,7 +15,6 @@ import androidx.annotation.Nullable;
 import com.example.clock.R;
 
 import java.time.LocalTime;
-import java.util.Calendar;
 
 public class ClockView extends View {
     private int height = 0;

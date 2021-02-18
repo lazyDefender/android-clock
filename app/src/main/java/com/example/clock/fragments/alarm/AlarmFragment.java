@@ -1,4 +1,4 @@
-package com.example.clock.ui.alarm;
+package com.example.clock.fragments.alarm;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.clock.handlers.AlarmFragmentHandler;
@@ -26,7 +25,6 @@ import java.util.List;
 
 public class AlarmFragment extends Fragment {
 
-    private AlarmViewModel alarmViewModel;
     private FragmentAlarmBinding binding;
     private AlarmsListAdapter adapter;
     private AlarmFragmentHandler handler;
@@ -34,9 +32,6 @@ public class AlarmFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        alarmViewModel =
-                new ViewModelProvider(this).get(AlarmViewModel.class);
-//        View root = inflater.inflate(R.layout.fragment_alarm, container, false);
         binding = FragmentAlarmBinding.inflate(inflater, container, false);
 
         return binding.getRoot();

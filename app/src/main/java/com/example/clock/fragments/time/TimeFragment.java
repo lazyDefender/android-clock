@@ -1,4 +1,4 @@
-package com.example.clock.ui.time;
+package com.example.clock.fragments.time;
 
 import android.os.Bundle;
 import android.text.Editable;
@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.clock.adapters.ZonesListAdapter;
@@ -26,7 +25,6 @@ import java.util.TimeZone;
 
 public class TimeFragment extends Fragment {
 
-    private TimeViewModel timeViewModel;
     private FragmentTimeBinding binding;
     private ZonesListAdapter adapter;
     private Zone[] zones;
@@ -34,8 +32,6 @@ public class TimeFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        timeViewModel =
-                new ViewModelProvider(this).get(TimeViewModel.class);
         binding = FragmentTimeBinding.inflate(inflater, container, false);
 
         return binding.getRoot();

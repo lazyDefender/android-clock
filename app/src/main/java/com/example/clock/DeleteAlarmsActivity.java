@@ -80,7 +80,7 @@ public class DeleteAlarmsActivity extends AppCompatActivity {
         try {
             List<Alarm> alarms = AlarmRepo.findAll(this);
             adapter = new DeleteAlarmsListAdapter(alarms);
-            activityDeleteAlarmsBinding.setAdapter(adapter);
+            activityDeleteAlarmsBinding.deleteAlarmsList.setAdapter(adapter);
             activityDeleteAlarmsBinding.deleteAlarmsList.setNestedScrollingEnabled(false);
             activityDeleteAlarmsBinding.deleteAlarmsList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         } catch (IOException e) {

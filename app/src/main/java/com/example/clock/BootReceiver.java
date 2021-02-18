@@ -16,11 +16,13 @@ import java.util.List;
 public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        Toast.makeText(context, "hello", Toast.LENGTH_SHORT).show();
         try {
             List<Alarm> alarms = AlarmRepo.findAll(context);
             AlarmManager manager = (AlarmManager) context.getSystemService(Service.ALARM_SERVICE);
-            alarms.stream().forEach(alarm -> {
+            alarms
+                    .stream()
+                    .filter(alarm -> alarm.isActive())
+                    .forEach(alarm -> {
                 AlarmRepo.launchAlarm(context, alarm, manager);
             });
         } catch (IOException e) {
