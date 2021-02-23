@@ -25,7 +25,7 @@
             android:theme="@style/AlarmFormTheme"
             app:title="@string/delete_alarms"
             app:titleTextColor="#FFFFFF"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:navigationIcon="@drawable/ic_back_button"
             />
         <RelativeLayout
             android:layout_width="match_parent"

@@ -30,7 +30,7 @@
             android:theme="@style/SelectSignalTheme"
             app:title="@string/select_alarm_sound"
             app:titleTextColor="#FFFFFF"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:navigationIcon="@drawable/ic_back_button"
             />
         <androidx.core.widget.NestedScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"

@@ -1,5 +1,6 @@
 package com.example.clock;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import com.example.clock.adapters.CustomTunesListAdapter;
 import com.example.clock.adapters.TunesListAdapter;
@@ -18,6 +20,7 @@ import com.example.clock.models.Tune;
 import com.example.clock.repos.TuneRepo;
 import com.example.clock.utils.RequestCodes;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +34,19 @@ public class SelectCustomTuneActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         handler.onBack(this, adapter.getTunes(), defaultTuneId);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch(id) {
+            case android.R.id.home:
+                handler.onBack(this, adapter.getTunes(), defaultTuneId);
+                return true;
+            default:
+                break;
+        }
+        return true;
     }
 
     @Override
