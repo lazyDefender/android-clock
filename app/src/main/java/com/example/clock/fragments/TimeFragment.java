@@ -1,4 +1,4 @@
-package com.example.clock.fragments.time;
+package com.example.clock.fragments;
 
 import android.os.Bundle;
 import android.text.Editable;

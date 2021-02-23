@@ -1,4 +1,4 @@
-package com.example.clock.fragments;
+package com.example.clock;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

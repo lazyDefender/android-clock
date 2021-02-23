@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/navigation_alarm"
-        android:name="com.example.clock.fragments.alarm.AlarmFragment"
+        android:name="com.example.clock.fragments.AlarmFragment"
         android:label="@string/title_alarm"
         tools:layout="@layout/fragment_alarm" />
 
     <fragment
         android:id="@+id/navigation_time"
-        android:name="com.example.clock.fragments.time.TimeFragment"
+        android:name="com.example.clock.fragments.TimeFragment"
         android:label="@string/title_time"
         tools:layout="@layout/fragment_time" />
 

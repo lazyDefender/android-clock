@@ -1,4 +1,4 @@
-package com.example.clock.fragments.alarm;
+package com.example.clock.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
